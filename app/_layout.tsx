@@ -1,29 +1,37 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+// import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import DrawerContent from '@/src/components/DrawerContent';
+import LanguageProvider from '@/src/components/LanguageProvider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  // useFrameworkReady();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <LanguageProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Drawer
+          drawerContent={DrawerContent}
+          screenOptions={{
+            headerShown: false,
+            // drawerType: 'front',
+            drawerStyle: {
+              backgroundColor: '#FFFFFF',
+              width: 280,
+            },
+          }}
+        >
+          <Drawer.Screen name="index" options={{ title: 'Dashboard' }} />
+          <Drawer.Screen name="buyers" options={{ title: 'Buyers' }} />
+          <Drawer.Screen name="dalals" options={{ title: 'Dalals' }} />
+          <Drawer.Screen name="materials" options={{ title: 'Materials' }} />
+          <Drawer.Screen name="bills" options={{ title: 'Bills' }} />
+          <Drawer.Screen name="settings" options={{ title: 'Settings' }} />
+          <Drawer.Screen name="+not-found" options={{ drawerItemStyle: { display: 'none' } }} />
+        </Drawer>
+        <StatusBar style="auto" />
+      </GestureHandlerRootView>
+    </LanguageProvider>
   );
 }

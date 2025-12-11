@@ -14,7 +14,8 @@ export default function MaterialsScreen() {
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    extra_detail: ''
+    extra_detail: '',
+    hsn_code: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -25,7 +26,7 @@ export default function MaterialsScreen() {
   const loadMaterials = async () => {
     try {
       const data = await materialOperations.getAll();
-      setMaterials(data);
+      setMaterials(data as Material[]);
     } catch (error) {
       Alert.alert(t('error'), t('failedToLoadMaterials'));
     }
@@ -38,11 +39,16 @@ export default function MaterialsScreen() {
       newErrors.name = t('materialNameRequired');
     }
 
+    if (!formData.hsn_code.trim()) {
+      newErrors.hsn_code = t('materialHSNCodeRequired');
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async () => {
+  const handleSave = async () => {    
+    // return;
     if (!validateForm()) return;
 
     try {
@@ -65,7 +71,8 @@ export default function MaterialsScreen() {
     setEditingMaterial(material);
     setFormData({
       name: material.name,
-      extra_detail: material.extra_detail || ''
+      extra_detail: material.extra_detail || '',
+      hsn_code: material.hsn_code || ''
     });
     setModalVisible(true);
   };
@@ -94,7 +101,7 @@ export default function MaterialsScreen() {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', extra_detail: '' });
+    setFormData({ name: '', extra_detail: '', hsn_code: '' });
     setErrors({});
     setEditingMaterial(null);
   };
@@ -135,6 +142,9 @@ export default function MaterialsScreen() {
                 <Text style={styles.materialName}>{material.name}</Text>
                 {material.extra_detail && (
                   <Text style={styles.materialDetail}>{material.extra_detail}</Text>
+                )}
+                {material.hsn_code && (
+                  <Text style={styles.materialDetail}>{material.hsn_code}</Text>
                 )}
               </View>
               <View style={styles.materialActions}>
@@ -185,6 +195,15 @@ export default function MaterialsScreen() {
                 multiline
                 numberOfLines={3}
                 placeholder={t('additionalDetailsPlaceholder')}
+              />
+
+              <FormInput
+                label={t('materialHSNCode')}
+                value={formData.hsn_code}
+                onChangeText={(text) => setFormData({ ...formData, hsn_code: text })}
+                error={errors.hsn_code}
+                required
+                placeholder={t('materialHSNCodePlaceholder')}
               />
             </ScrollView>
 

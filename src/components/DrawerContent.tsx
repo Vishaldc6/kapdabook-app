@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from 'expo-router';
-import { Building2, Clock, Chrome as Home, Package, Receipt, Settings, User, Users } from 'lucide-react-native';
+import { BadgePercent, Building2, Clock, Chrome as Home, Package, Receipt, Settings, User, Users } from 'lucide-react-native';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../hook/useLanguage';
@@ -11,6 +11,7 @@ const drawerItems = [
   { name: 'dalals', titleKey: 'dalals', icon: User, route: '/dalals' },
   { name: 'materials', titleKey: 'materials', icon: Package, route: '/materials' },
   { name: 'dhara', titleKey: 'dhara', icon: Clock, route: '/dhara' },
+  { name: 'taxes', titleKey: 'taxes', icon: BadgePercent, route: '/taxes' },
   { name: 'bills', titleKey: 'bills', icon: Receipt, route: '/bills' },
   { name: 'settings', titleKey: 'settings', icon: Settings, route: '/settings' },
 ];

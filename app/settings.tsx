@@ -2,7 +2,7 @@ import { Language, useLanguage } from '@/src/hook/useLanguage';
 import { exportDatabase, getDatabaseStats } from '@/src/utils/backup';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
-import { ChartBar as BarChart3, Database, Download, Package, Receipt, Settings as SettingsIcon, User, Users } from 'lucide-react-native';
+import { ChartBar as BarChart3, Database, Download, Package, ReceiptIndianRupee, Settings as SettingsIcon, User, Users } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -126,7 +126,7 @@ export default function SettingsScreen() {
               color="#10B981"
             />
             <StatCard
-              icon={<Receipt size={24} color="#F59E0B" />}
+              icon={<ReceiptIndianRupee size={24} color="#F59E0B" />}
               title={t('totalBills')}
               value={stats.totalBills}
               color="#F59E0B"

@@ -20,7 +20,8 @@ export const createTables = `
   CREATE TABLE IF NOT EXISTS Material (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    extra_detail TEXT
+    extra_detail TEXT,
+    hsn_code TEXT
   );
 
   -- Create Dhara table
@@ -28,6 +29,13 @@ export const createTables = `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     dhara_name TEXT NOT NULL,
     days INTEGER NOT NULL
+  );
+
+   -- Create Tax table
+  CREATE TABLE IF NOT EXISTS Tax (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    percentage INTEGER NOT NULL
   );
 
   -- Create Bill table
@@ -43,10 +51,12 @@ export const createTables = `
     chalan_no TEXT NOT NULL,
     taka_count INTEGER NOT NULL,
     payment_received BOOLEAN DEFAULT 0,
+    tax_id INTEGER NOT NULL,
     FOREIGN KEY (buyer_id) REFERENCES Buyer(id),
     FOREIGN KEY (dalal_id) REFERENCES Dalal(id),
     FOREIGN KEY (material_id) REFERENCES Material(id),
-    FOREIGN KEY (dhara_id) REFERENCES Dhara(id)
+    FOREIGN KEY (dhara_id) REFERENCES Dhara(id),
+    FOREIGN KEY (tax_id) REFERENCES Tax(id)
   );
 `;
 
@@ -57,23 +67,26 @@ export const insertDefaultData = `
     (3, 'Cash (0 days)', 0),
     (4, 'Extended (60 days)', 60);
 
-  INSERT OR IGNORE INTO Material (id, name, extra_detail) VALUES
-    (1, 'Cotton', 'Premium quality cotton fabric'),
-    (2, 'Polyester', 'Synthetic blend material'),
-    (3, 'Silk', 'Natural silk fabric'),
-    (4, 'Wool', 'Pure wool material');
-`;
+  INSERT OR IGNORE INTO Material (id, name, extra_detail, hsn_code) VALUES
+    (1, 'Cotton', 'Premium quality cotton fabric', '52010000'),
+    (2, 'Polyester', 'Synthetic blend material', '52020000'),
+    (3, 'Silk', 'Natural silk fabric', '52030000'),
+    (4, 'Wool', 'Pure wool material', '52040000');
 
-/*
+  INSERT OR IGNORE INTO Tax (id, name, percentage) VALUES
+    (1, 'IGST', 10),
+    (2, 'SGST & CGST', 10);
+    `;
+/*   
 INSERT OR IGNORE INTO Buyer (id, name, address, contact_number, gst_number ) VALUES
-    (1, 'Jalaram ltd.', 'Adajan, Surat', '8574968596', 'DEFG446734'),
-    (2, 'Shrusti pvt ltd', 'Vesu, Surat', '9898969858', 'HGTU231975');
+         (1, 'Jalaram ltd.', 'Adajan, Surat', '8574968596', 'DEFG446734'),
+         (2, 'Shrusti pvt ltd', 'Vesu, Surat', '9898969858', 'HGTU231975');
 
-  INSERT OR IGNORE INTO Dalal (id, name, address, contact_number ) VALUES
-    (1, 'Kishan Patel', 'Katargam, Surat', '7418529635'),
-    (2, 'Ramesh Rathod', 'VIP road, Navasari', '796584569');
+       INSERT OR IGNORE INTO Dalal (id, name, address, contact_number ) VALUES
+         (1, 'Kishan Patel', 'Katargam, Surat', '7418529635'),
+         (2, 'Ramesh Rathod', 'VIP road, Navasari', '796584569');
 
-  INSERT OR IGNORE INTO Bill (id, date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received ) VALUES
-    (1, '05-08-2025', 2, 1, 3, 50, 200, 2, 8526, 120, 0),
-    (1, '04-09-2025', 1, 1, 1, 100, 50, 1, 7485, 200, 1);
+     INSERT OR IGNORE INTO Bill (id, date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id ) VALUES
+       (1, '05-08-2025', 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1),
+       (1, '04-09-2025', 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2);
 */

@@ -1,7 +1,7 @@
 import { billOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Bill } from '@/src/types';
-import { Calendar, CircleCheck as CheckCircle, DollarSign, Package, User } from 'lucide-react-native';
+import { Calendar, CircleCheck as CheckCircle, IndianRupee, Package, User } from 'lucide-react-native';
 import React from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -88,7 +88,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF }: BillCardProp
       </View>
 
       <View style={styles.row}>
-        <DollarSign size={16} color="#10B981" />
+        <IndianRupee size={16} color="#10B981" />
         <Text style={styles.label}>Amount:</Text>
         <Text style={[styles.amount, { color: getStatusColor() }]}>
           {formatAmount(bill.total_amount || 0)}

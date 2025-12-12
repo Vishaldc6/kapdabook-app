@@ -48,14 +48,13 @@ export const useLanguageState = () => {
 
   const t = (key: string, params?: Record<string, any>) => {
     const translations = getTranslations(language);
-    let translation = translations[key] || key;
-    
+    const typedTranslations = translations as Record<string, string>;
+    let translation: string = typedTranslations[key] ?? key;
     if (params) {
       Object.keys(params).forEach(param => {
         translation = translation.replace(`{{${param}}}`, params[param]);
       });
     }
-    
     return translation;
   };
 
@@ -72,6 +71,7 @@ const getTranslations = (language: Language) => {
       materials: 'Materials',
       bills: 'Bills',
       dhara: 'Payment Terms',
+      taxes: 'Taxes',
       settings: 'Settings',
       
       // Common
@@ -147,9 +147,12 @@ const getTranslations = (language: Language) => {
       deleteMaterialConfirm: 'Are you sure you want to delete {{name}}?',
       materialName: 'Material Name',
       additionalDetails: 'Additional Details',
+      materialHSNCode: 'Material HSN Code',
       materialNamePlaceholder: 'e.g., Cotton, Silk, Polyester',
       additionalDetailsPlaceholder: 'Optional description or specifications',
+      materialHSNCodePlaceholder: 'e.g., 52010000, 52020000, 52030000',
       materialNameRequired: 'Material name is required',
+      materialHSNCodeRequired: 'Material HSN code is required',
       materialCreated: 'Material created successfully!',
       materialUpdated: 'Material updated successfully!',
       materialDeleted: 'Material deleted successfully!',
@@ -179,7 +182,27 @@ const getTranslations = (language: Language) => {
       failedToLoadDharas: 'Failed to load payment terms',
       failedToSaveDhara: 'Failed to save payment term',
       failedToDeleteDhara: 'Failed to delete payment term',
-      
+      // Taxes
+      taxesManagement: 'Taxes Management',
+      noTaxesFound: 'No taxes found',
+      addFirstTax: 'Add your first tax to get started',
+      addNewTax: 'Add New Tax',
+      editTax: 'Edit Tax',
+      deleteTax: 'Delete Tax',
+      deleteTaxConfirm: 'Are you sure you want to delete {{name}}?',
+      taxName: 'Tax Name',
+      taxPercentage: 'Tax Percentage',
+      taxNamePlaceholder: 'e.g., IGST, SGST, CGST',
+      taxPercentagePlaceholder: 'e.g., 5, 10',
+      taxNameRequired: 'Tax name is required',
+      taxPercentageRequired: 'Tax percentage is required',
+      taxCreated: 'Tax created successfully!',
+      taxUpdated: 'Tax updated successfully!',
+      taxDeleted: 'Tax deleted successfully!',
+      failedToLoadTaxes: 'Failed to load taxes',
+      failedToSaveTax: 'Failed to save tax',
+      failedToDeleteTax: 'Failed to delete tax',
+
       // Bills
       billsManagement: 'Bills Management',
       noBillsFound: 'No bills found',
@@ -196,6 +219,7 @@ const getTranslations = (language: Language) => {
       paymentTerms: 'Payment Terms',
       chalanNumber: 'Chalan Number',
       takaCount: 'Taka Count',
+      gst_type: 'GST Type',
       buyerRequired: 'Please select a buyer',
       dalalRequired: 'Please select a dalal',
       materialRequired: 'Please select a material',
@@ -204,6 +228,7 @@ const getTranslations = (language: Language) => {
       priceRateRequired: 'Price rate is required',
       chalanRequired: 'Chalan number is required',
       takaCountRequired: 'Taka count is required',
+      gstRequired: 'Please select gst type',
       meterValidation: 'Meter must be a valid number',
       priceRateValidation: 'Price rate must be a valid number',
       takaCountValidation: 'Taka count must be a valid number',
@@ -255,6 +280,7 @@ const getTranslations = (language: Language) => {
       materials: 'सामग्री',
       bills: 'बिल',
       dhara: 'भुगतान शर्तें',
+      taxes: 'कर',
       settings: 'सेटिंग्स',
       
       // Common
@@ -330,9 +356,12 @@ const getTranslations = (language: Language) => {
       deleteMaterialConfirm: 'क्या आप वाकई {{name}} को हटाना चाहते हैं?',
       materialName: 'सामग्री का नाम',
       additionalDetails: 'अतिरिक्त विवरण',
+      materialHSNCode: 'सामग्री HSN कोड',
       materialNamePlaceholder: 'जैसे, कॉटन, सिल्क, पॉलिएस्टर',
       additionalDetailsPlaceholder: 'वैकल्पिक विवरण या विशिष्टताएं',
+      materialHSNCodePlaceholder: 'जैसे, 52010000, 52020000, 52030000',
       materialNameRequired: 'सामग्री का नाम आवश्यक है',
+      materialHSNCodeRequired: 'सामग्री HSN कोड आवश्यक है',
       materialCreated: 'सामग्री सफलतापूर्वक बनाई गई!',
       materialUpdated: 'सामग्री सफलतापूर्वक अपडेट की गई!',
       materialDeleted: 'सामग्री सफलतापूर्वक हटाई गई!',
@@ -362,7 +391,27 @@ const getTranslations = (language: Language) => {
       failedToLoadDharas: 'भुगतान शर्तें लोड करने में विफल',
       failedToSaveDhara: 'भुगतान शर्त सेव करने में विफल',
       failedToDeleteDhara: 'भुगतान शर्त हटाने में विफल',
-      
+      // Taxes
+      taxesManagement: 'कर प्रबंधन',
+      noTaxesFound: 'कोई कर नहीं मिला',
+      addFirstTax: 'शुरू करने के लिए अपना पहला कर जोड़ें',
+      addNewTax: 'नया कर जोड़ें',
+      editTax: 'कर संपादित करें',
+      deleteTax: 'कर हटाएं',
+      deleteTaxConfirm: 'क्या आप वाकई {{name}} को हटाना चाहते हैं?',
+      taxName: 'कर का नाम',
+      taxPercentage: 'कर प्रतिशत',
+      taxNamePlaceholder: 'जैसे, IGST, SGST, CGST',
+      taxPercentagePlaceholder: 'जैसे, 5, 10',
+      taxNameRequired: 'कर का नाम आवश्यक है',
+      taxPercentageRequired: 'कर प्रतिशत आवश्यक है',
+      taxCreated: 'कर सफलतापूर्वक बनाया गया!',
+      taxUpdated: 'कर सफलतापूर्वक अपडेट किया गया!',
+      taxDeleted: 'कर सफलतापूर्वक हटाया गया!',
+      failedToLoadTaxes: 'कर लोड करने में विफल',
+      failedToSaveTax: 'कर सेव करने में विफल',
+      failedToDeleteTax: 'कर हटाने में विफल',
+
       // Bills
       billsManagement: 'बिल प्रबंधन',
       noBillsFound: 'कोई बिल नहीं मिला',
@@ -379,6 +428,7 @@ const getTranslations = (language: Language) => {
       paymentTerms: 'भुगतान शर्तें',
       chalanNumber: 'चालान नंबर',
       takaCount: 'टका गिनती',
+      gst_type: 'GST Type',
       buyerRequired: 'कृपया एक खरीदार चुनें',
       dalalRequired: 'कृपया एक दलाल चुनें',
       materialRequired: 'कृपया एक सामग्री चुनें',
@@ -387,6 +437,7 @@ const getTranslations = (language: Language) => {
       priceRateRequired: 'मूल्य दर आवश्यक है',
       chalanRequired: 'चालान नंबर आवश्यक है',
       takaCountRequired: 'टका गिनती आवश्यक है',
+      gstRequired: 'कृपया GST प्रकार चुनें',
       meterValidation: 'मीटर एक वैध संख्या होनी चाहिए',
       priceRateValidation: 'मूल्य दर एक वैध संख्या होनी चाहिए',
       takaCountValidation: 'टका गिनती एक वैध संख्या होनी चाहिए',

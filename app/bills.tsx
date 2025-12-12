@@ -1,15 +1,15 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DrawerToggleButton } from '@react-navigation/drawer';
-import { Filter, Plus, Receipt } from 'lucide-react-native';
+import { Filter, Plus, ReceiptIndianRupee } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import BillCard from '@/src/components/BillCard';
 import FormInput from '@/src/components/FormInput';
 import Picker from '@/src/components/Picker';
-import { billOperations, buyerOperations, dalalOperations, dharaOperations, materialOperations } from '@/src/database/database';
+import { billOperations, buyerOperations, dalalOperations, dharaOperations, materialOperations, taxOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
-import { Bill, Buyer, Dalal, Dhara, Material } from '@/src/types';
+import { Bill, Buyer, Dalal, Dhara, Material, Tax } from '@/src/types';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 
 export default function BillsScreen() {
@@ -19,6 +19,7 @@ export default function BillsScreen() {
   const [dalals, setDalals] = useState<Dalal[]>([]);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [dharas, setDharas] = useState<Dhara[]>([]);
+  const [taxes, setTaxes] = useState<Tax[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -32,7 +33,8 @@ export default function BillsScreen() {
     price_rate: '',
     dhara_id: 0,
     chalan_no: '',
-    taka_count: ''
+    taka_count: '',
+    tax_id: 0
   });
 
   const [filter, setFilter] = useState<'all' | 'pending' | 'paid'>('all');
@@ -44,19 +46,21 @@ export default function BillsScreen() {
   }, []);
   const loadData = async () => {
     try {
-      const [billsData, buyersData, dalalsData, materialsData, dharasData] = await Promise.all([
+      const [billsData, buyersData, dalalsData, materialsData, dharasData, taxData] = await Promise.all([
         billOperations.getAll(),
         buyerOperations.getAll(),
         dalalOperations.getAll(),
         materialOperations.getAll(),
-        dharaOperations.getAll()
+        dharaOperations.getAll(),
+        taxOperations.getAll(),
       ]);
 
-      setBills(billsData);
-      setBuyers(buyersData);
-      setDalals(dalalsData);
-      setMaterials(materialsData);
-      setDharas(dharasData);
+      setBills(billsData as Bill[]);
+      setBuyers(buyersData as Buyer[]);
+      setDalals(dalalsData as Dalal[]);
+      setMaterials(materialsData as Material[]);
+      setDharas(dharasData as Dhara[]);
+      setTaxes(taxData as Tax[]);
     } catch (error) {
       Alert.alert(t('error'), 'Failed to load data');
     }
@@ -73,6 +77,7 @@ export default function BillsScreen() {
     if (!formData.price_rate.trim()) newErrors.price_rate = t('priceRateRequired');
     if (!formData.chalan_no.trim()) newErrors.chalan_no = t('chalanRequired');
     if (!formData.taka_count.trim()) newErrors.taka_count = t('takaCountRequired');
+    if (!formData.tax_id) newErrors.tax_id = t('gstRequired');
 
     // Validate numeric fields
     if (formData.meter && isNaN(parseFloat(formData.meter))) {
@@ -102,7 +107,8 @@ export default function BillsScreen() {
         price_rate: parseFloat(formData.price_rate),
         dhara_id: formData.dhara_id,
         chalan_no: formData.chalan_no,
-        taka_count: parseInt(formData.taka_count)
+        taka_count: parseInt(formData.taka_count),
+        tax_id: formData.tax_id
       });
 
       setModalVisible(false);
@@ -124,7 +130,8 @@ export default function BillsScreen() {
       price_rate: '',
       dhara_id: 0,
       chalan_no: '',
-      taka_count: ''
+      taka_count: '',
+      tax_id: 0
     });
     setErrors({});
   };
@@ -163,13 +170,14 @@ export default function BillsScreen() {
   const dalalItems = dalals.map(dalal => ({ label: dalal.name, value: dalal.id }));
   const materialItems = materials.map(material => ({ label: material.name, value: material.id }));
   const dharaItems = dharas.map(dhara => ({ label: dhara.dhara_name, value: dhara.id }));
+  const taxItems = taxes.map(tax => ({ label: tax.name, value: tax.id }));
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <DrawerToggleButton />
         <View style={styles.headerContent}>
-          <Receipt size={24} color="#2563EB" />
+          <ReceiptIndianRupee size={24} color="#2563EB" />
           <Text style={styles.title}>{t('billsManagement')}</Text>
         </View>
         <View style={styles.headerActions}>
@@ -192,7 +200,7 @@ export default function BillsScreen() {
       <ScrollView style={styles.content}>
         {filteredBills.length === 0 ? (
           <View style={styles.emptyState}>
-            <Receipt size={48} color="#9CA3AF" />
+            <ReceiptIndianRupee size={48} color="#9CA3AF" />
             <Text style={styles.emptyTitle}>{t('noBillsFound')}</Text>
             <Text style={styles.emptySubtitle}>
               {filter === 'all' ? t('createFirstBill') :
@@ -309,6 +317,15 @@ export default function BillsScreen() {
                 onChangeText={(text) => setFormData({ ...formData, taka_count: text })}
                 keyboardType="numeric"
                 error={errors.taka_count}
+                required
+              />
+
+              <Picker
+                label={t('gst_type')}
+                selectedValue={formData.tax_id}
+                items={taxItems}
+                onValueChange={(value) => setFormData({ ...formData, tax_id: value })}
+                error={errors.tax_id}
                 required
               />
             </ScrollView>

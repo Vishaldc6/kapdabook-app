@@ -6,7 +6,7 @@ import { getDatabaseStats } from '@/src/utils/backup';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect } from '@react-navigation/native';
-import { TriangleAlert as AlertTriangle, Calendar, DollarSign, TrendingUp, Users } from 'lucide-react-native';
+import { TriangleAlert as AlertTriangle, Calendar, IndianRupee, TrendingUp, Users } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -111,7 +111,7 @@ export default function HomeScreen() {
 
           <View style={styles.statCard}>
             <View style={styles.statHeader}>
-              <DollarSign size={24} color="#F59E0B" />
+              <IndianRupee size={24} color="#F59E0B" />
               <Text style={styles.statValue}>{formatCurrency(stats.pendingAmount)}</Text>
             </View>
             <Text style={styles.statLabel}>{t('pendingAmount')}</Text>

@@ -5,7 +5,7 @@ import { getDatabase } from '@/src/database/database';
 export const exportDatabase = async () => {
   try {
     // Get database file path
-    const dbPath = `${FileSystem.documentDirectory}SQLite/textile_billing.db`;
+    const dbPath = `${FileSystem.documentDirectory}SQLite/textile_billing_v1.db`;
     
     // Check if database file exists
     const fileInfo = await FileSystem.getInfoAsync(dbPath);
@@ -15,7 +15,7 @@ export const exportDatabase = async () => {
     
     // Create backup filename with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const backupFilename = `textile_billing_backup_${timestamp}.db`;
+    const backupFilename = `textile_billing_v1_backup_${timestamp}.db`;
     const backupPath = `${FileSystem.documentDirectory}${backupFilename}`;
     
     // Copy database file to backup location

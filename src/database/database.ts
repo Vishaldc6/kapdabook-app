@@ -2,6 +2,7 @@ import * as SQLite from 'expo-sqlite';
 import { createTables, insertDefaultData } from './schema';
 
 let database: SQLite.SQLiteDatabase | null = null;
+let initializing: Promise<SQLite.SQLiteDatabase> | null = null;
 
 export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (database) return database;
@@ -26,11 +27,12 @@ export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   }
 };
 
-export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
-  if (!database) {
-    return await initializeDatabase();
+export const getDatabase = async () => {
+  if (database) return database;
+  if (!initializing) {
+    initializing = initializeDatabase();
   }
-  return database;
+  return initializing;
 };
 
 // Database operations for Buyers

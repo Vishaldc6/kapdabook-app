@@ -1,8 +1,9 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { Filter, Plus, ReceiptIndianRupee } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import BillCard from '@/src/components/BillCard';
 import FormInput from '@/src/components/FormInput';
@@ -41,9 +42,12 @@ export default function BillsScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    },[])
+  );
+
   const loadData = async () => {
     try {
       const [billsData, buyersData, dalalsData, materialsData, dharasData, taxData] = await Promise.all([

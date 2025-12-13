@@ -1,7 +1,8 @@
 import { usePathname, useRouter } from 'expo-router';
 import { BadgePercent, Building2, Clock, Chrome as Home, Package, ReceiptIndianRupee, Settings, User, Users } from 'lucide-react-native';
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '../hook/useLanguage';
 
 

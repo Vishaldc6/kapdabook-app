@@ -8,7 +8,7 @@ export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (database) return database;
 
   try {
-    database = await SQLite.openDatabaseAsync('textile_billing_v1.db');
+    database = await SQLite.openDatabaseAsync('textile_billing_v1_temp.db');
 
     // Enable foreign keys
     await database.execAsync('PRAGMA foreign_keys = ON;');
@@ -221,7 +221,7 @@ export const billOperations = {
              d.dhara_name,
              d.days as dhara_days,
              date(b.date, '+' || d.days || ' days') as due_date,
-             (b.meter * b.price_rate) as total_amount
+             (b.base_amount + b.tax_amount) as total_amount
       FROM Bill b
       JOIN Buyer buyer ON b.buyer_id = buyer.id
       JOIN Dalal dalal ON b.dalal_id = dalal.id  
@@ -247,7 +247,7 @@ export const billOperations = {
              d.days as dhara_days,
              date(b.date, '+' || d.days || ' days') as due_date,
              (julianday(date(b.date, '+' || d.days || ' days')) - julianday('now')) as days_to_due,
-             (b.meter * b.price_rate) as total_amount
+             (b.base_amount + b.tax_amount) as total_amount
       FROM Bill b
       JOIN Buyer buyer ON b.buyer_id = buyer.id
       JOIN Dalal dalal ON b.dalal_id = dalal.id
@@ -270,11 +270,13 @@ export const billOperations = {
     chalan_no: string;
     taka_count: number;
     tax_id: number;
+    base_amount: number;
+    tax_amount: number;
   }) => {
     const db = await getDatabase();
     const result = await db.runAsync(`
-      INSERT INTO Bill (date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, tax_id, payment_received)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,0)
+      INSERT INTO Bill (date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, tax_id, base_amount, tax_amount, payment_received)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
     `, [
       bill.date,
       bill.buyer_id,
@@ -286,6 +288,8 @@ export const billOperations = {
       bill.chalan_no,
       bill.taka_count,
       bill.tax_id,
+      bill.base_amount,
+      bill.tax_amount,
     ]);
     return result.lastInsertRowId;
   },

@@ -52,6 +52,8 @@ export const createTables = `
     taka_count INTEGER NOT NULL,
     payment_received BOOLEAN DEFAULT 0,
     tax_id INTEGER NOT NULL,
+    base_amount REAL NOT NULL,
+    tax_amount REAL NOT NULL,
     FOREIGN KEY (buyer_id) REFERENCES Buyer(id),
     FOREIGN KEY (dalal_id) REFERENCES Dalal(id),
     FOREIGN KEY (material_id) REFERENCES Material(id),
@@ -86,7 +88,7 @@ INSERT OR IGNORE INTO Buyer (id, name, address, contact_number, gst_number ) VAL
          (1, 'Kishan Patel', 'Katargam, Surat', '7418529635'),
          (2, 'Ramesh Rathod', 'VIP road, Navasari', '796584569');
 
-     INSERT OR IGNORE INTO Bill (id, date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id ) VALUES
-       (1, '05-08-2025', 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1),
-       (1, '04-09-2025', 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2);
+     INSERT OR IGNORE INTO Bill (date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id, base_amount, tax_amount ) VALUES
+         ('2025-08-05', 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1, 10000, 1000),
+         ('2025-09-04', 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2, 10000, 1000);
 */

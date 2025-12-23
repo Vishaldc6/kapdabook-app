@@ -55,6 +55,8 @@ export interface Bill {
   dhara_days?: number;
   due_date?: string;
   days_to_due?: number;
+  base_amount?: number;
+  tax_amount?: number;
   total_amount?: number;
   tax_name?: string;
   tax_percentage?: number;

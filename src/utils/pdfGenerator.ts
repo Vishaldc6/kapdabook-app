@@ -365,7 +365,7 @@ export const generateBillPDF = async (bill: Bill) => {
             <div class="terms-title">Terms & Conditions</div>
             <ol class="terms-list">
               <li>No claim of dispute arising from charge in quality or shortage in meters or any cash what so ever will be entertained once the goods are delivered.</li>
-              <li>The payment of this should be made in case against delivery filling which the interest at 24% per month shall be charge from date of bill.</li>
+              <li>The payment of this should be made in case against delivery filling which the interest at 2% per month shall be charge from date of bill.</li>
               <li>The goods are Despatched at your Risk.</li>
               <li>Subject to Surat Jurisdiction.</li>
             </ol>

@@ -102,6 +102,9 @@ export default function BillsScreen() {
     if (!validateForm()) return;
 
     try {
+      const base_amount = parseFloat(formData.meter) * parseFloat(formData.price_rate);
+      const tax_amount = base_amount * (taxes.find(({ id }) => id === formData.tax_id)?.percentage ?? 0) / 100
+
       await billOperations.create({
         date: formData.date,
         buyer_id: formData.buyer_id,
@@ -112,7 +115,9 @@ export default function BillsScreen() {
         dhara_id: formData.dhara_id,
         chalan_no: formData.chalan_no,
         taka_count: parseInt(formData.taka_count),
-        tax_id: formData.tax_id
+        tax_id: formData.tax_id,
+        base_amount,
+        tax_amount
       });
 
       setModalVisible(false);
@@ -160,7 +165,6 @@ export default function BillsScreen() {
   });
 
   const handleDateChange = (_event: any, selectedDate?: Date) => {
-    // On Android, picker closes automatically; on iOS keep it open until user confirms if using inline
     if (Platform.OS === 'android') {
       setShowDatePicker(false);
     }

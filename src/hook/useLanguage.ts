@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-export type Language = 'en' | 'hi';
+export type Language = 'en' | 'hi' | 'gu';
 
 interface LanguageContextType {
   language: Language;
@@ -29,7 +29,7 @@ export const useLanguageState = () => {
   const loadLanguage = async () => {
     try {
       const savedLanguage = await AsyncStorage.getItem('app_language');
-      if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi')) {
+      if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi' || savedLanguage === 'gu')) {
         setLanguageState(savedLanguage);
       }
     } catch (error) {
@@ -64,6 +64,7 @@ export const useLanguageState = () => {
 const getTranslations = (language: Language) => {
   const translations = {
     en: {
+      en: 'English',
       // Navigation
       dashboard: 'Dashboard',
       buyers: 'Buyers',
@@ -72,8 +73,9 @@ const getTranslations = (language: Language) => {
       bills: 'Bills',
       dhara: 'Payment Terms',
       taxes: 'Taxes',
+      account: 'Account',
       settings: 'Settings',
-      
+
       // Common
       add: 'Add',
       edit: 'Edit',
@@ -84,7 +86,7 @@ const getTranslations = (language: Language) => {
       success: 'Success',
       error: 'Error',
       loading: 'Loading...',
-      
+
       // Dashboard
       textileBillingDashboard: 'Textile Billing Dashboard',
       welcomeBack: 'Welcome back! Here\'s your business overview',
@@ -99,7 +101,8 @@ const getTranslations = (language: Language) => {
       pendingBills: 'Pending Bills:',
       totalDalals: 'Total Dalals:',
       materialTypes: 'Material Types:',
-      
+      completeProfileForPDF: '*Please complete profile details for PDF generation.',
+
       // Buyers
       buyersManagement: 'Buyers Management',
       noBuyersFound: 'No buyers found',
@@ -121,7 +124,7 @@ const getTranslations = (language: Language) => {
       failedToLoadBuyers: 'Failed to load buyers',
       failedToSaveBuyer: 'Failed to save buyer',
       failedToDeleteBuyer: 'Failed to delete buyer',
-      
+
       // Dalals
       dalalsManagement: 'Dalals Management',
       noDalalsFound: 'No dalals found',
@@ -136,7 +139,7 @@ const getTranslations = (language: Language) => {
       failedToLoadDalals: 'Failed to load dalals',
       failedToSaveDalal: 'Failed to save dalal',
       failedToDeleteDalal: 'Failed to delete dalal',
-      
+
       // Materials
       materialsManagement: 'Materials Management',
       noMaterialsFound: 'No materials found',
@@ -159,7 +162,7 @@ const getTranslations = (language: Language) => {
       failedToLoadMaterials: 'Failed to load materials',
       failedToSaveMaterial: 'Failed to save material',
       failedToDeleteMaterial: 'Failed to delete material',
-      
+
       // Dhara
       dharaManagement: 'Payment Terms Management',
       noDharasFound: 'No payment terms found',
@@ -182,6 +185,7 @@ const getTranslations = (language: Language) => {
       failedToLoadDharas: 'Failed to load payment terms',
       failedToSaveDhara: 'Failed to save payment term',
       failedToDeleteDhara: 'Failed to delete payment term',
+
       // Taxes
       taxesManagement: 'Taxes Management',
       noTaxesFound: 'No taxes found',
@@ -210,6 +214,9 @@ const getTranslations = (language: Language) => {
       noPendingBills: 'No pending bills',
       noPaidBills: 'No paid bills',
       createNewBill: 'Create New Bill',
+      updateBill: 'Edit Bill',
+      deleteBill: 'Delete Bill',
+      deleteBillConfirm: 'Are you sure you want to delete this bill?',
       date: 'Date',
       buyer: 'Buyer',
       dalal: 'Dalal',
@@ -234,7 +241,10 @@ const getTranslations = (language: Language) => {
       takaCountValidation: 'Taka count must be a valid number',
       createBill: 'Create Bill',
       billCreated: 'Bill created successfully!',
+      billUpdated: 'Bill updated successfully!',
+      billDeleted: 'Bill deleted successfully!',
       failedToCreateBill: 'Failed to create bill',
+      failedToUpdateBill: 'Failed to update bill',
       markAsPaid: 'Mark as Paid',
       markBillPaid: 'Mark bill #{{id}} as paid?',
       markPaid: 'Mark Paid',
@@ -245,7 +255,46 @@ const getTranslations = (language: Language) => {
       pendingBillsFilter: 'Pending Bills',
       paidBills: 'Paid Bills',
       close: 'Close',
-      
+
+      // Account
+      accountManagement: 'Account Management',
+      companyDetails: 'Company Details',
+      bankDetails: 'Bank Details',
+      termsDetails: 'Terms & Conditions Details',
+      tagline: 'Tagline',
+      businessType: 'Business Type',
+      contact: 'Contact',
+      gst: 'GST Number',
+      pan: 'PAN Number',
+      bankName: 'Bank Name',
+      branch: 'Branch',
+      accountNo: 'Account Number',
+      ifsc: 'IFSC Code',
+      termsConditions: 'Terms & Conditions',
+      companyNamePlaceholder: 'Enter company name',
+      taglinePlaceholder: 'Enter company tagline',
+      businessTypePlaceholder: 'Enter business type',
+      addressPlaceholder: 'Enter full address',
+      contactPlaceholder: 'Enter 10-digit mobile number',
+      gstPlaceholder: 'Enter GST number',
+      panPlaceholder: 'Enter PAN number',
+      bankNamePlaceholder: 'Enter bank name',
+      branchPlaceholder: 'Enter branch name',
+      accountNoPlaceholder: 'Enter account number',
+      ifscPlaceholder: 'Enter IFSC code',
+      termsPlaceholder: 'Enter terms and conditions',
+      businessTypeRequired: 'Business type is required',
+      addressRequired: 'Address is required',
+      gstValidation: 'Enter a valid GST number',
+      panValidation: 'Enter a valid PAN number',
+      bankNameRequired: 'Bank name is required',
+      branchRequired: 'Branch is required',
+      accountNoValidation: 'Enter a valid account number',
+      ifscValidation: 'Enter a valid IFSC code',
+      termsRequired: 'Terms & conditions are required',
+      accountSavedSuccessfully: 'Account details saved successfully!',
+      failedToSaveAccount: 'Failed to save account details',
+
       // Settings
       settingsAnalytics: 'Settings & Analytics',
       databaseOverview: 'Database Overview',
@@ -265,14 +314,16 @@ const getTranslations = (language: Language) => {
       platform: 'Platform',
       lastBackup: 'Last Backup',
       never: 'Never',
-      
+
       // Language
       language: 'Language',
       selectLanguage: 'Select Language',
       english: 'English',
       hindi: 'हिंदी',
+      gujarati: 'ગુજરાતી',
     },
     hi: {
+      hi: 'हिंदी',
       // Navigation
       dashboard: 'डैशबोर्ड',
       buyers: 'खरीदार',
@@ -281,8 +332,9 @@ const getTranslations = (language: Language) => {
       bills: 'बिल',
       dhara: 'भुगतान शर्तें',
       taxes: 'कर',
+      account: 'खाता',
       settings: 'सेटिंग्स',
-      
+
       // Common
       add: 'जोड़ें',
       edit: 'संपादित करें',
@@ -293,12 +345,12 @@ const getTranslations = (language: Language) => {
       success: 'सफलता',
       error: 'त्रुटि',
       loading: 'लोड हो रहा है...',
-      
+
       // Dashboard
       textileBillingDashboard: 'टेक्सटाइल बिलिंग डैशबोर्ड',
       welcomeBack: 'वापस स्वागत है! यहाँ आपके व्यापार का अवलोकन है',
       totalRevenue: 'कुल आय',
-      pendingAmount: 'बकाया राशि',
+      pendingAmount: 'बाकी रकम',
       totalBuyers: 'कुल खरीदार',
       totalBills: 'कुल बिल',
       urgentBills: 'तत्काल बिल (≤ 5 दिन)',
@@ -308,7 +360,8 @@ const getTranslations = (language: Language) => {
       pendingBills: 'बकाया बिल:',
       totalDalals: 'कुल दलाल:',
       materialTypes: 'सामग्री प्रकार:',
-      
+      completeProfileForPDF: '*PDF बनाने के लिए कृपया प्रोफाइल की जानकारी पूरी करें।',
+
       // Buyers
       buyersManagement: 'खरीदार प्रबंधन',
       noBuyersFound: 'कोई खरीदार नहीं मिला',
@@ -330,7 +383,7 @@ const getTranslations = (language: Language) => {
       failedToLoadBuyers: 'खरीदार लोड करने में विफल',
       failedToSaveBuyer: 'खरीदार सेव करने में विफल',
       failedToDeleteBuyer: 'खरीदार हटाने में विफल',
-      
+
       // Dalals
       dalalsManagement: 'दलाल प्रबंधन',
       noDalalsFound: 'कोई दलाल नहीं मिला',
@@ -345,7 +398,7 @@ const getTranslations = (language: Language) => {
       failedToLoadDalals: 'दलाल लोड करने में विफल',
       failedToSaveDalal: 'दलाल सेव करने में विफल',
       failedToDeleteDalal: 'दलाल हटाने में विफल',
-      
+
       // Materials
       materialsManagement: 'सामग्री प्रबंधन',
       noMaterialsFound: 'कोई सामग्री नहीं मिली',
@@ -368,7 +421,7 @@ const getTranslations = (language: Language) => {
       failedToLoadMaterials: 'सामग्री लोड करने में विफल',
       failedToSaveMaterial: 'सामग्री सेव करने में विफल',
       failedToDeleteMaterial: 'सामग्री हटाने में विफल',
-      
+
       // Dhara
       dharaManagement: 'भुगतान शर्तें प्रबंधन',
       noDharasFound: 'कोई भुगतान शर्तें नहीं मिलीं',
@@ -419,6 +472,9 @@ const getTranslations = (language: Language) => {
       noPendingBills: 'कोई बकाया बिल नहीं',
       noPaidBills: 'कोई भुगतान किया गया बिल नहीं',
       createNewBill: 'नया बिल बनाएं',
+      updateBill: 'बिल अपडेट करें',
+      deleteBill: 'बिल हटाएं',
+      deleteBillConfirm: 'क्या आप वाकई इस बिल को हटाना चाहते हैं?',
       date: 'दिनांक',
       buyer: 'खरीदार',
       dalal: 'दलाल',
@@ -428,7 +484,7 @@ const getTranslations = (language: Language) => {
       paymentTerms: 'भुगतान शर्तें',
       chalanNumber: 'चालान नंबर',
       takaCount: 'टका गिनती',
-      gst_type: 'GST Type',
+      gst_type: 'GST प्रकार',
       buyerRequired: 'कृपया एक खरीदार चुनें',
       dalalRequired: 'कृपया एक दलाल चुनें',
       materialRequired: 'कृपया एक सामग्री चुनें',
@@ -443,10 +499,13 @@ const getTranslations = (language: Language) => {
       takaCountValidation: 'टका गिनती एक वैध संख्या होनी चाहिए',
       createBill: 'बिल बनाएं',
       billCreated: 'बिल सफलतापूर्वक बनाया गया!',
+      billUpdated: 'बिल सफलतापूर्वक अपडेट किया गया!',
+      billDeleted: 'बिल सफलतापूर्वक हटाया गया!',
       failedToCreateBill: 'बिल बनाने में विफल',
-      markAsPaid: 'भुगतान के रूप में चिह्नित करें',
+      failedToUpdateBill: 'बिल अपडेट करने में विफल',
+      markAsPaid: 'भुगतान किया हुआ दिखाएं',
       markBillPaid: 'बिल #{{id}} को भुगतान के रूप में चिह्नित करें?',
-      markPaid: 'भुगतान चिह्नित करें',
+      markPaid: 'भुगतान किया',
       generatePDF: 'पीडीएफ जेनरेट करें',
       failedToGeneratePDF: 'पीडीएफ जेनरेट करने में विफल',
       filterBills: 'बिल फिल्टर करें',
@@ -454,16 +513,55 @@ const getTranslations = (language: Language) => {
       pendingBillsFilter: 'बकाया बिल',
       paidBills: 'भुगतान किए गए बिल',
       close: 'बंद करें',
-      
+
+      // Account
+      accountManagement: 'खाता जानकारी',
+      companyDetails: 'कंपनी विवरण',
+      bankDetails: 'बैंक विवरण',
+      termsDetails: 'नियम और शर्तें',
+      tagline: 'टैगलाइन',
+      businessType: 'व्यवसाय का प्रकार',
+      contact: 'संपर्क',
+      gst: 'GST नंबर',
+      pan: 'PAN नंबर',
+      bankName: 'बैंक का नाम',
+      branch: 'शाखा',
+      accountNo: 'खाता नंबर',
+      ifsc: 'IFSC कोड',
+      termsConditions: 'नियम व शर्तें',
+      companyNamePlaceholder: 'कंपनी का नाम दर्ज करें',
+      taglinePlaceholder: 'कंपनी का टैगलाइन दर्ज करें',
+      businessTypePlaceholder: 'व्यवसाय का प्रकार दर्ज करें',
+      addressPlaceholder: 'पूरा पता दर्ज करें',
+      contactPlaceholder: '10 अंकों का मोबाइल नंबर दर्ज करें',
+      gstPlaceholder: 'GST नंबर दर्ज करें',
+      panPlaceholder: 'PAN नंबर दर्ज करें',
+      bankNamePlaceholder: 'बैंक का नाम दर्ज करें',
+      branchPlaceholder: 'शाखा का नाम दर्ज करें',
+      accountNoPlaceholder: 'खाता नंबर दर्ज करें',
+      ifscPlaceholder: 'IFSC कोड दर्ज करें',
+      termsPlaceholder: 'नियम व शर्तें दर्ज करें',
+      businessTypeRequired: 'व्यवसाय का प्रकार आवश्यक है',
+      addressRequired: 'पता आवश्यक है',
+      gstValidation: 'मान्य GST नंबर दर्ज करें',
+      panValidation: 'मान्य PAN नंबर दर्ज करें',
+      bankNameRequired: 'बैंक का नाम आवश्यक है',
+      branchRequired: 'शाखा आवश्यक है',
+      accountNoValidation: 'मान्य खाता नंबर दर्ज करें',
+      ifscValidation: 'मान्य IFSC कोड दर्ज करें',
+      termsRequired: 'नियम व शर्तें आवश्यक हैं',
+      accountSavedSuccessfully: 'खाता विवरण सफलतापूर्वक सेव किया गया!',
+      failedToSaveAccount: 'खाता विवरण सेव करने में विफल',
+
       // Settings
-      settingsAnalytics: 'सेटिंग्स और एनालिटिक्स',
-      databaseOverview: 'डेटाबेस अवलोकन',
-      financialSummary: 'वित्तीय सारांश',
+      settingsAnalytics: 'सेटिंग्स और रिपोर्ट',
+      databaseOverview: 'डेटाबेस जानकारी',
+      financialSummary: 'पैसों का सारांश',
       dataManagement: 'डेटा प्रबंधन',
-      databaseBackup: 'डेटाबेस बैकअप',
+      databaseBackup: 'डेटा बैकअप',
       databaseBackupDesc: 'सभी खरीदार, दलाल, सामग्री और बिल डेटा सहित अपना पूरा डेटाबेस निर्यात करें।',
-      export: 'निर्यात',
-      exporting: 'निर्यात हो रहा है...',
+      export: 'बैकअप निकालें',
+      exporting: 'बैकअप हो रहा है...',
       exportSuccessful: 'निर्यात सफल',
       exportSuccessfulDesc: 'डेटाबेस बैकअप बनाया गया और सफलतापूर्वक साझा किया गया!',
       exportFailed: 'निर्यात विफल',
@@ -474,15 +572,275 @@ const getTranslations = (language: Language) => {
       platform: 'प्लेटफॉर्म',
       lastBackup: 'अंतिम बैकअप',
       never: 'कभी नहीं',
-      
+
       // Language
       language: 'भाषा',
       selectLanguage: 'भाषा चुनें',
       english: 'English',
       hindi: 'हिंदी',
+      gujarati: 'ગુજરાતી',
+    },
+    gu: {
+      gu: 'ગુજરાતી',
+      // Navigation
+      dashboard: 'ડેશબોર્ડ',
+      buyers: 'ખરીદદાર',
+      dalals: 'દલાલ',
+      materials: 'મટિરિયલ',
+      bills: 'બિલ',
+      dhara: 'ચુકવણી શરતો',
+      taxes: 'કર',
+      account: 'ખાતું',
+      settings: 'સેટિંગ્સ',
+
+      // Common
+      add: 'ઉમેરો',
+      edit: 'એડિટ કરો',
+      delete: 'કાઢી નાખો',
+      save: 'સેવ કરો',
+      update: 'અપડેટ કરો',
+      cancel: 'રદ કરો',
+      success: 'સફળ',
+      error: 'ભૂલ',
+      loading: 'લોડ થઈ રહ્યું છે...',
+
+      // Dashboard
+      textileBillingDashboard: 'ટેક્સટાઇલ બિલિંગ ડેશબોર્ડ',
+      welcomeBack: 'ફરી સ્વાગત છે! તમારો બિઝનેસ સારાંશ અહીં છે',
+      totalRevenue: 'કુલ આવક',
+      pendingAmount: 'બાકી રકમ',
+      totalBuyers: 'કુલ ખરીદદાર',
+      totalBills: 'કુલ બિલ',
+      urgentBills: 'તાત્કાલિક બિલ (≤ 5 દિવસ)',
+      noUrgentBills: 'કોઈ તાત્કાલિક બિલ નથી',
+      allPaymentsUpToDate: 'બધા પેમેન્ટ અપ ટુ ડેટ છે!',
+      quickSummary: 'ઝડપી માહિતી',
+      pendingBills: 'બાકી બિલ:',
+      totalDalals: 'કુલ દલાલ:',
+      materialTypes: 'મટિરિયલ પ્રકાર:',
+      completeProfileForPDF: '*PDF બનાવવા માટે કૃપા કરીને પ્રોફાઇલની માહિતી પૂર્ણ કરો.',
+
+      // Buyers
+      buyersManagement: 'ખરીદદાર મેનેજમેન્ટ',
+      noBuyersFound: 'કોઈ ખરીદદાર નથી',
+      addFirstBuyer: 'શરૂઆત કરવા માટે પહેલો ખરીદદાર ઉમેરો',
+      addNewBuyer: 'નવો ખરીદદાર ઉમેરો',
+      editBuyer: 'ખરીદદાર એડિટ કરો',
+      deleteBuyer: 'ખરીદદાર કાઢો',
+      deleteBuyerConfirm: 'શું તમે ખરેખર {{name}} કાઢી નાખવા માંગો છો?',
+      name: 'નામ',
+      address: 'સરનામું',
+      contactNumber: 'સંપર્ક નંબર',
+      gstNumber: 'GST નંબર',
+      nameRequired: 'નામ જરૂરી છે',
+      contactRequired: 'સંપર્ક નંબર જરૂરી છે',
+      contactValidation: 'સંપર્ક નંબર 10 અંકનો હોવો જોઈએ',
+      buyerCreated: 'ખરીદદાર સફળતાપૂર્વક ઉમેરાયો!',
+      buyerUpdated: 'ખરીદદાર સફળતાપૂર્વક અપડેટ થયો!',
+      buyerDeleted: 'ખરીદદાર કાઢી નાખવામાં આવ્યો!',
+      failedToLoadBuyers: 'ખરીદદાર લોડ થવામાં નિષ્ફળ',
+      failedToSaveBuyer: 'ખરીદદાર સેવ ન થઈ શક્યો',
+      failedToDeleteBuyer: 'ખરીદદાર કાઢી શક્યા નથી',
+
+      // Dalals
+      dalalsManagement: 'દલાલ મેનેજમેન્ટ',
+      noDalalsFound: 'કોઈ દલાલ નથી',
+      addFirstDalal: 'શરૂઆત કરવા માટે પહેલો દલાલ ઉમેરો',
+      addNewDalal: 'નવો દલાલ ઉમેરો',
+      editDalal: 'દલાલ એડિટ કરો',
+      deleteDalal: 'દલાલ કાઢો',
+      deleteDalalConfirm: 'શું તમે ખરેખર {{name}} કાઢી નાખવા માંગો છો?',
+      dalalCreated: 'દલાલ સફળતાપૂર્વક ઉમેરાયો!',
+      dalalUpdated: 'દલાલ સફળતાપૂર્વક અપડેટ થયો!',
+      dalalDeleted: 'દલાલ કાઢી નાખવામાં આવ્યો!',
+      failedToLoadDalals: 'દલાલ લોડ થવામાં નિષ્ફળ',
+      failedToSaveDalal: 'દલાલ સેવ ન થઈ શક્યો',
+      failedToDeleteDalal: 'દલાલ કાઢી શક્યા નથી',
+
+      // Materials
+      materialsManagement: 'મટિરિયલ મેનેજમેન્ટ',
+      noMaterialsFound: 'કોઈ મટિરિયલ નથી',
+      addFirstMaterial: 'શરૂઆત કરવા માટે પહેલું મટિરિયલ ઉમેરો',
+      addNewMaterial: 'નવું મટિરિયલ ઉમેરો',
+      editMaterial: 'મટિરિયલ એડિટ કરો',
+      deleteMaterial: 'મટિરિયલ કાઢો',
+      deleteMaterialConfirm: 'શું તમે ખરેખર {{name}} કાઢી નાખવા માંગો છો?',
+      materialName: 'મટિરિયલ નામ',
+      additionalDetails: 'વધારાની માહિતી',
+      materialHSNCode: 'HSN કોડ',
+      materialNamePlaceholder: 'જેમ કે: કોટન, સિલ્ક, પોલિએસ્ટર',
+      additionalDetailsPlaceholder: 'વધારાની વિગતો (વૈકલ્પિક)',
+      materialHSNCodePlaceholder: 'જેમ કે: 52010000',
+      materialNameRequired: 'મટિરિયલ નામ જરૂરી છે',
+      materialHSNCodeRequired: 'HSN કોડ જરૂરી છે',
+      materialCreated: 'મટિરિયલ સફળતાપૂર્વક ઉમેરાયું!',
+      materialUpdated: 'મટિરિયલ સફળતાપૂર્વક અપડેટ થયું!',
+      materialDeleted: 'મટિરિયલ કાઢી નાખવામાં આવ્યું!',
+      failedToLoadMaterials: 'મટિરિયલ લોડ થવામાં નિષ્ફળ',
+      failedToSaveMaterial: 'મટિરિયલ સેવ ન થઈ શક્યું',
+      failedToDeleteMaterial: 'મટિરિયલ કાઢી શક્યા નથી',
+
+      // Dhara
+      dharaManagement: 'ચુકવણી શરતો મેનેજમેન્ટ',
+      noDharasFound: 'કોઈ ચુકવણી શરતો નથી',
+      addFirstDhara: 'શરૂઆત કરવા માટે પહેલી શરત ઉમેરો',
+      addNewDhara: 'નવી ચુકવણી શરત ઉમેરો',
+      editDhara: 'ચુકવણી શરત એડિટ કરો',
+      deleteDhara: 'ચુકવણી શરત કાઢો',
+      deleteDharaConfirm: 'શું તમે ખરેખર {{name}} કાઢી નાખવા માંગો છો?',
+      dharaName: 'ચુકવણી શરત નામ',
+      paymentDays: 'ચુકવણી દિવસ',
+      dharaNamePlaceholder: 'જેમ કે: રેગ્યુલર, કેશ',
+      daysPlaceholder: 'જેમ કે: 30, 10, 0',
+      dharaNameRequired: 'ચુકવણી શરત નામ જરૂરી છે',
+      daysRequired: 'દિવસ જરૂરી છે',
+      daysValidNumber: 'દિવસ માન્ય નંબર હોવો જોઈએ',
+      days: '{{count}} દિવસ',
+      dharaCreated: 'ચુકવણી શરત ઉમેરાઈ!',
+      dharaUpdated: 'ચુકવણી શરત અપડેટ થઈ!',
+      dharaDeleted: 'ચુકવણી શરત કાઢી નાખવામાં આવી!',
+      failedToLoadDharas: 'ચુકવણી શરતો લોડ ન થઈ',
+      failedToSaveDhara: 'ચુકવણી શરત સેવ ન થઈ',
+      failedToDeleteDhara: 'ચુકવણી શરત કાઢી શક્યા નથી',
+
+      // Taxes
+      taxesManagement: 'કર મેનેજમેન્ટ',
+      noTaxesFound: 'કોઈ કર નથી',
+      addFirstTax: 'શરૂઆત કરવા માટે પહેલો કર ઉમેરો',
+      addNewTax: 'નવો કર ઉમેરો',
+      editTax: 'કર એડિટ કરો',
+      deleteTax: 'કર કાઢો',
+      deleteTaxConfirm: 'શું તમે ખરેખર {{name}} કાઢી નાખવા માંગો છો?',
+      taxName: 'કર નામ',
+      taxPercentage: 'કર ટકા',
+      taxNamePlaceholder: 'જેમ કે: CGST, SGST',
+      taxPercentagePlaceholder: 'જેમ કે: 5, 12',
+      taxNameRequired: 'કર નામ જરૂરી છે',
+      taxPercentageRequired: 'કર ટકા જરૂરી છે',
+      taxCreated: 'કર ઉમેરાયો!',
+      taxUpdated: 'કર અપડેટ થયો!',
+      taxDeleted: 'કર કાઢી નાખવામાં આવ્યો!',
+      failedToLoadTaxes: 'કર લોડ ન થયા',
+      failedToSaveTax: 'કર સેવ ન થયો',
+      failedToDeleteTax: 'કર કાઢી શક્યા નથી',
+
+      // Bills
+      billsManagement: 'બિલ મેનેજમેન્ટ',
+      noBillsFound: 'કોઈ બિલ નથી',
+      createFirstBill: 'શરૂઆત કરવા માટે પહેલું બિલ બનાવો',
+      noPendingBills: 'કોઈ બાકી બિલ નથી',
+      noPaidBills: 'કોઈ ચૂકવેલ બિલ નથી',
+      createNewBill: 'નવું બિલ બનાવો',
+      updateBill: 'બિલ એડિટ કરો',
+      deleteBill: 'બિલ કાઢો',
+      deleteBillConfirm: 'શું તમે ખરેખર આ બિલ કાઢી નાખવા માંગો છો?',
+      date: 'તારીખ',
+      buyer: 'ખરીદદાર',
+      dalal: 'દલાલ',
+      material: 'મટિરિયલ',
+      meter: 'મીટર',
+      priceRate: 'ભાવ',
+      paymentTerms: 'ચુકવણી શરતો',
+      chalanNumber: 'ચાલાન નંબર',
+      takaCount: 'ટકા સંખ્યા',
+      gst_type: 'GST પ્રકાર',
+      buyerRequired: 'ખરીદદાર પસંદ કરો',
+      dalalRequired: 'દલાલ પસંદ કરો',
+      materialRequired: 'મટિરિયલ પસંદ કરો',
+      dharaRequired: 'ચુકવણી શરત પસંદ કરો',
+      meterRequired: 'મીટર જરૂરી છે',
+      priceRateRequired: 'ભાવ જરૂરી છે',
+      chalanRequired: 'ચાલાન નંબર જરૂરી છે',
+      takaCountRequired: 'ટકા સંખ્યા જરૂરી છે',
+      gstRequired: 'GST પ્રકાર પસંદ કરો',
+      meterValidation: 'મીટર માન્ય નંબર હોવો જોઈએ',
+      priceRateValidation: 'ભાવ માન્ય નંબર હોવો જોઈએ',
+      takaCountValidation: 'ટકા સંખ્યા માન્ય હોવી જોઈએ',
+      createBill: 'બિલ બનાવો',
+      billCreated: 'બિલ સફળતાપૂર્વક બન્યું!',
+      billUpdated: 'બિલ અપડેટ થયું!',
+      billDeleted: 'બિલ કાઢી નાખવામાં આવ્યું!',
+      failedToCreateBill: 'બિલ બનાવી શકાયું નહીં',
+      failedToUpdateBill: 'બિલ અપડેટ ન થયું',
+      markAsPaid: 'પેમેન્ટ થયું બતાવો',
+      markBillPaid: 'બિલ #{{id}} પેમેન્ટ થયું બતાવશો?',
+      markPaid: 'પેમેન્ટ થયું',
+      generatePDF: 'PDF બનાવો',
+      failedToGeneratePDF: 'PDF બની શક્યું નથી',
+      filterBills: 'બિલ ફિલ્ટર કરો',
+      allBills: 'બધા બિલ',
+      pendingBillsFilter: 'બાકી બિલ',
+      paidBills: 'ચૂકવેલા બિલ',
+      close: 'બંધ કરો',
+
+      // Account
+      accountManagement: 'ખાતા માહિતી',
+      companyDetails: 'કંપની માહિતી',
+      bankDetails: 'બેંક માહિતી',
+      termsDetails: 'નિયમ અને શરતો',
+      tagline: 'ટેગલાઇન',
+      businessType: 'બિઝનેસ પ્રકાર',
+      contact: 'સંપર્ક',
+      gst: 'GST નંબર',
+      pan: 'PAN નંબર',
+      bankName: 'બેંક નામ',
+      branch: 'શાખા',
+      accountNo: 'ખાતા નંબર',
+      ifsc: 'IFSC કોડ',
+      termsConditions: 'નિયમ અને શરતો',
+      companyNamePlaceholder: 'કંપની નામ દાખલ કરો',
+      taglinePlaceholder: 'ટેગલાઇન દાખલ કરો',
+      businessTypePlaceholder: 'બિઝનેસ પ્રકાર દાખલ કરો',
+      addressPlaceholder: 'સરનામું દાખલ કરો',
+      contactPlaceholder: '10 અંકનો મોબાઇલ નંબર દાખલ કરો',
+      gstPlaceholder: 'GST નંબર દાખલ કરો',
+      panPlaceholder: 'PAN નંબર દાખલ કરો',
+      bankNamePlaceholder: 'બેંક નામ દાખલ કરો',
+      branchPlaceholder: 'શાખા નામ દાખલ કરો',
+      accountNoPlaceholder: 'ખાતા નંબર દાખલ કરો',
+      ifscPlaceholder: 'IFSC કોડ દાખલ કરો',
+      termsPlaceholder: 'નિયમ અને શરતો દાખલ કરો',
+      businessTypeRequired: 'બિઝનેસ પ્રકાર જરૂરી છે',
+      addressRequired: 'સરનામું જરૂરી છે',
+      gstValidation: 'માન્ય GST નંબર દાખલ કરો',
+      panValidation: 'માન્ય PAN નંબર દાખલ કરો',
+      bankNameRequired: 'બેંક નામ જરૂરી છે',
+      branchRequired: 'શાખા જરૂરી છે',
+      accountNoValidation: 'માન્ય ખાતા નંબર દાખલ કરો',
+      ifscValidation: 'માન્ય IFSC કોડ દાખલ કરો',
+      termsRequired: 'નિયમ અને શરતો જરૂરી છે',
+      accountSavedSuccessfully: 'ખાતા માહિતી સેવ થઈ ગઈ!',
+      failedToSaveAccount: 'ખાતા માહિતી સેવ ન થઈ',
+
+      // Settings
+      settingsAnalytics: 'સેટિંગ્સ અને રિપોર્ટ',
+      databaseOverview: 'ડેટાબેસ માહિતી',
+      financialSummary: 'પૈસાનો સારાંશ',
+      dataManagement: 'ડેટા મેનેજમેન્ટ',
+      databaseBackup: 'ડેટા બેકઅપ',
+      databaseBackupDesc: 'તમારો આખો ડેટા બેકઅપ લો',
+      export: 'બેકઅપ કાઢો',
+      exporting: 'બેકઅપ થઈ રહ્યું છે...',
+      exportSuccessful: 'બેકઅપ સફળ',
+      exportSuccessfulDesc: 'ડેટાબેસ બેકઅપ બની ગયો!',
+      exportFailed: 'બેકઅપ નિષ્ફળ',
+      exportFailedDesc: 'બેકઅપ કાઢી શકાયો નહીં',
+      appInformation: 'એપ માહિતી',
+      version: 'વર્ઝન',
+      databaseEngine: 'ડેટાબેસ એન્જિન',
+      platform: 'પ્લેટફોર્મ',
+      lastBackup: 'છેલ્લો બેકઅપ',
+      never: 'ક્યારેય નહીં',
+
+      // Language
+      language: 'ભાષા',
+      selectLanguage: 'ભાષા પસંદ કરો',
+      english: 'English',
+      hindi: 'हिंदी',
+      gujarati: 'ગુજરાતી',
     }
   };
-  
+
   return translations[language] || translations.en;
 };
 

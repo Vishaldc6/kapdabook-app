@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
-import { ChevronDown, Check } from 'lucide-react-native';
+import { Check, ChevronDown, Search } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface PickerItem {
   label: string;
@@ -27,8 +27,21 @@ export default function Picker({
   error
 }: PickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
-  
+  const [search, setSearch] = useState('');
+
   const selectedItem = items.find(item => item.value === selectedValue);
+
+  const filteredItems = useMemo(() => {
+    if (!search.trim()) return items;
+    return items.filter(item =>
+      item.label.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [items, search]);
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSearch('');
+  };
 
   return (
     <View style={styles.container}>
@@ -36,7 +49,7 @@ export default function Picker({
         {label}
         {required && <Text style={styles.required}> *</Text>}
       </Text>
-      
+
       <TouchableOpacity
         style={[styles.picker, error && styles.pickerError]}
         onPress={() => setModalVisible(true)}
@@ -46,28 +59,40 @@ export default function Picker({
         </Text>
         <ChevronDown size={20} color="#6B7280" />
       </TouchableOpacity>
-      
+
       {error && <Text style={styles.errorText}>{error}</Text>}
-      
+
       <Modal
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={closeModal}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{label}</Text>
-            
+
+            {items.length > 5 && <View style={styles.searchContainer}>
+              <Search size={18} color="#6B7280" />
+              <TextInput
+                placeholder="Search..."
+                value={search}
+                onChangeText={setSearch}
+                style={styles.searchInput}
+                placeholderTextColor="#9CA3AF"
+              />
+            </View>}
+
             <FlatList
-              data={items}
+              data={filteredItems}
               keyExtractor={(item, index) => `${item.value}-${index}`}
+              keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => {
                     onValueChange(item.value);
-                    setModalVisible(false);
+                    closeModal();
                   }}
                 >
                   <Text style={styles.modalItemText}>{item.label}</Text>
@@ -76,8 +101,11 @@ export default function Picker({
                   )}
                 </TouchableOpacity>
               )}
+              ListEmptyComponent={
+                <Text style={styles.emptyText}>No results found</Text>
+              }
             />
-            
+
             <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => setModalVisible(false)}
@@ -175,5 +203,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#6B7280',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+    backgroundColor: '#FFFFFF',
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+    marginLeft: 8,
+    color: '#374151',
+  },
+  emptyText: {
+    textAlign: 'center',
+    paddingVertical: 20,
+    color: '#9CA3AF',
+    fontSize: 14,
   },
 });

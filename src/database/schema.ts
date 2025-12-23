@@ -1,4 +1,21 @@
 export const createTables = `
+  -- Create Company Profile table
+  CREATE TABLE IF NOT EXISTS CompanyProfile (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    name TEXT NOT NULL,
+    tagline TEXT,
+    address TEXT NOT NULL,
+    contact TEXT NOT NULL,
+    gst TEXT NOT NULL,
+    pan TEXT NOT NULL,
+    business_type TEXT NOT NULL,
+    bank_name TEXT NOT NULL,
+    account_no TEXT NOT NULL,
+    ifsc TEXT NOT NULL,
+    branch TEXT NOT NULL,
+    terms_conditions TEXT NOT NULL
+  );
+
   -- Create Buyer table
   CREATE TABLE IF NOT EXISTS Buyer (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

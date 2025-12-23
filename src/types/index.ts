@@ -1,3 +1,19 @@
+export interface CompanyProfile {
+  id: number;
+  name: string;
+  tagline?: string;
+  address: string;
+  contact: string;
+  gst: string;
+  pan: string;
+  business_type: string;
+  bank_name: string;
+  account_no: string;
+  ifsc: string;
+  branch: string;
+  terms_conditions: string;
+}
+
 export interface Buyer {
   id: number;
   name: string;

@@ -4,7 +4,7 @@ import { useLanguage } from '@/src/hook/useLanguage';
 import { Dhara } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
-import { Clock, CreditCard as Edit, Plus, Trash2 } from 'lucide-react-native';
+import { Clock, Edit, Plus, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 

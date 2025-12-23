@@ -1,9 +1,9 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { useFocusEffect } from '@react-navigation/native';
 import { Filter, Plus, ReceiptIndianRupee } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 
 import BillCard from '@/src/components/BillCard';
 import FormInput from '@/src/components/FormInput';
@@ -24,6 +24,7 @@ export default function BillsScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [editingBill, setEditingBill] = useState<Bill | null>(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -45,7 +46,7 @@ export default function BillsScreen() {
   useFocusEffect(
     useCallback(() => {
       loadData();
-    },[])
+    }, [])
   );
 
   const loadData = async () => {
@@ -105,7 +106,7 @@ export default function BillsScreen() {
       const base_amount = parseFloat(formData.meter) * parseFloat(formData.price_rate);
       const tax_amount = base_amount * (taxes.find(({ id }) => id === formData.tax_id)?.percentage ?? 0) / 100
 
-      await billOperations.create({
+      const payloadData = {
         date: formData.date,
         buyer_id: formData.buyer_id,
         dalal_id: formData.dalal_id,
@@ -118,14 +119,21 @@ export default function BillsScreen() {
         tax_id: formData.tax_id,
         base_amount,
         tax_amount
-      });
+      };
+
+      if (editingBill) {
+        await billOperations.update(editingBill.id, payloadData);
+      } else {
+        await billOperations.create(payloadData);
+      }
 
       setModalVisible(false);
+      setEditingBill(null);
       resetForm();
       loadData();
-      Alert.alert(t('success'), t('billCreated'));
+      Alert.alert(t('success'), editingBill ? t('billUpdated') : t('billCreated'));
     } catch (error) {
-      Alert.alert(t('error'), t('failedToCreateBill'));
+      Alert.alert(t('error'), t(editingBill ? 'failedToUpdateBill' : 'failedToCreateBill'));
     }
   };
 
@@ -147,7 +155,48 @@ export default function BillsScreen() {
 
   const closeModal = () => {
     setModalVisible(false);
+    setEditingBill(null);
     resetForm();
+  };
+
+  const handleEditBill = (bill: Bill) => {
+    setEditingBill(bill);
+    setFormData({
+      date: bill.date,
+      buyer_id: bill.buyer_id,
+      dalal_id: bill.dalal_id,
+      material_id: bill.material_id,
+      meter: bill.meter.toString(),
+      price_rate: bill.price_rate.toString(),
+      dhara_id: bill.dhara_id,
+      chalan_no: bill.chalan_no,
+      taka_count: bill.taka_count.toString(),
+      tax_id: bill.tax_id
+    });
+    setModalVisible(true);
+  };
+
+  const handleDelete = (bill: Bill) => {
+    Alert.alert(
+      t('deleteBill'),
+      t('deleteBillConfirm', { name: bill.id }),
+      [
+        { text: t('cancel'), style: 'cancel' },
+        {
+          text: t('delete'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await billOperations.delete(bill.id);
+              loadData();
+              Alert.alert(t('success'), t('billDeleted'));
+            } catch (error) {
+              Alert.alert(t('error'), t('failedToDeleteBill'));
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleGeneratePDF = async (bill: Bill) => {
@@ -223,6 +272,8 @@ export default function BillsScreen() {
                 bill={bill}
                 onUpdate={loadData}
                 onGeneratePDF={handleGeneratePDF}
+                onEdit={handleEditBill}
+                handleDelete={handleDelete}
               />
             ))}
           </View>
@@ -238,7 +289,7 @@ export default function BillsScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{t('createNewBill')}</Text>
+            <Text style={styles.modalTitle}>{t(editingBill ? 'updateBill' : 'createNewBill')}</Text>
 
             <ScrollView style={styles.modalForm}>
               <TouchableOpacity activeOpacity={1} onPress={() => setShowDatePicker(true)}>
@@ -343,7 +394,7 @@ export default function BillsScreen() {
                 <Text style={styles.cancelButtonText}>{t('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>{t('createBill')}</Text>
+                <Text style={styles.saveButtonText}>{t(editingBill ? 'updateBill' : 'createBill')}</Text>
               </TouchableOpacity>
             </View>
           </View>

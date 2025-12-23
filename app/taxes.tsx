@@ -1,7 +1,7 @@
+import { DrawerToggleButton } from '@react-navigation/drawer';
+import { BadgePercent, Edit, Plus } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { DrawerToggleButton } from '@react-navigation/drawer';
-import { BadgePercent, CreditCard as Edit, Plus, Trash2 } from 'lucide-react-native';
 
 import FormInput from '@/src/components/FormInput';
 import { taxOperations } from '@/src/database/database';
@@ -149,12 +149,12 @@ export default function TaxesScreen() {
                                 >
                                     <Edit size={18} color="#3B82F6" />
                                 </TouchableOpacity>
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                     style={styles.deleteButton}
                                     onPress={() => handleDelete(tax)}
                                 >
                                     <Trash2 size={18} color="#EF4444" />
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                         </View>
                     ))
@@ -181,6 +181,7 @@ export default function TaxesScreen() {
                                 error={errors.name}
                                 required
                                 placeholder={t('taxNamePlaceholder')}
+                                editable={!editingTax}
                             />
 
                             <FormInput

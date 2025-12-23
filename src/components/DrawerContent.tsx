@@ -14,6 +14,7 @@ const drawerItems = [
   { name: 'dhara', titleKey: 'dhara', icon: Clock, route: '/dhara' },
   { name: 'taxes', titleKey: 'taxes', icon: BadgePercent, route: '/taxes' },
   { name: 'bills', titleKey: 'bills', icon: ReceiptIndianRupee, route: '/bills' },
+  { name: 'account', titleKey: 'account', icon: Building2, route: '/account' },
   { name: 'settings', titleKey: 'settings', icon: Settings, route: '/settings' },
 ];
 

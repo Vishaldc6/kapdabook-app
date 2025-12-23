@@ -1,7 +1,7 @@
 import { billOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Bill } from '@/src/types';
-import { Calendar, CircleCheck as CheckCircle, IndianRupee, Package, User } from 'lucide-react-native';
+import { Calendar, CircleCheck as CheckCircle, Edit, FileText, IndianRupee, Package, Trash2, User } from 'lucide-react-native';
 import React from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -9,16 +9,18 @@ interface BillCardProps {
   bill: Bill;
   onUpdate: () => void;
   onGeneratePDF: (bill: Bill) => void;
+  onEdit?: (bill: Bill) => void;
+  handleDelete: (bill: Bill) => void;
 }
 
-export default function BillCard({ bill, onUpdate, onGeneratePDF }: BillCardProps) {
+export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handleDelete }: BillCardProps) {
   const { t } = useLanguage();
   const daysTodue = bill.days_to_due || 0;
   const isOverdue = daysTodue < 0;
   const isDueSoon = daysTodue >= 0 && daysTodue <= 5;
 
   const getStatusColor = () => {
-    if (bill.payment_received) return '#10B981';
+    if (bill.payment_received) return '#10B944';
     if (isOverdue) return '#EF4444';
     if (isDueSoon) return '#F59E0B';
     return '#6B7280';
@@ -88,7 +90,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF }: BillCardProp
       </View>
 
       <View style={styles.row}>
-        <IndianRupee size={16} color="#10B981" />
+        <IndianRupee size={16} color="#6B7280" />
         <Text style={styles.label}>Amount:</Text>
         <Text style={[styles.amount, { color: getStatusColor() }]}>
           {formatAmount(bill.total_amount || 0)}
@@ -110,14 +112,29 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF }: BillCardProp
 
       <View style={styles.actions}>
         {!bill.payment_received && (
-          <TouchableOpacity style={styles.payButton} onPress={handleMarkAsPaid}>
+          <TouchableOpacity style={[styles.button, styles.payButton]} onPress={handleMarkAsPaid}>
             <CheckCircle size={16} color="#FFFFFF" />
-            <Text style={styles.payButtonText}>{t('markPaid')}</Text>
+            <Text style={styles.buttonText}>{t('markPaid')}</Text>
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.pdfButton} onPress={() => onGeneratePDF(bill)}>
-          <Text style={styles.pdfButtonText}>{t('generatePDF')}</Text>
+        <TouchableOpacity style={[styles.button, styles.pdfButton]} onPress={() => onGeneratePDF(bill)}>
+          <FileText size={16} color="#FFFFFF" />
+          <Text style={styles.buttonText}>{t('generatePDF')}</Text>
+        </TouchableOpacity>
+
+      </View>
+      <View style={styles.actions}>
+        {onEdit && (
+          <TouchableOpacity style={[styles.button, styles.editButton]} onPress={() => onEdit(bill)}>
+            <Edit size={16} color="#FFFFFF" />
+            <Text style={styles.buttonText}>{t('updateBill')}</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={() => handleDelete(bill)}>
+          <Trash2 size={16} color="#FFFFFF" />
+          <Text style={styles.buttonText}>{t('deleteBill')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -180,37 +197,35 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 12,
-    paddingTop: 12,
+    marginTop: 10,
+    paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: '#F3F4F6',
   },
-  payButton: {
-    backgroundColor: '#10B981',
+  button: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
+    minWidth: '50%',
     gap: 4,
     flex: 1,
-    justifyContent: 'center',
   },
-  payButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 14,
+  payButton: {
+    backgroundColor: '#10B944'
   },
   pdfButton: {
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F59E0B'
   },
-  pdfButtonText: {
+  editButton: {
+    backgroundColor: '#3B82F6',
+  },
+  deleteButton: {
+    backgroundColor: '#EF4444'
+  },
+  buttonText: {
     color: '#FFFFFF',
     fontWeight: '600',
     fontSize: 14,

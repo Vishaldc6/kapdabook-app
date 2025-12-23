@@ -25,6 +25,7 @@ export default function RootLayout() {
           <Drawer.Screen name="dalals" options={{ title: 'Dalals' }} />
           <Drawer.Screen name="materials" options={{ title: 'Materials' }} />
           <Drawer.Screen name="bills" options={{ title: 'Bills' }} />
+          <Drawer.Screen name="account" options={{ title: 'Account' }} />
           <Drawer.Screen name="settings" options={{ title: 'Settings' }} />
           <Drawer.Screen name="+not-found" options={{ drawerItemStyle: { display: 'none' } }} />
         </Drawer>

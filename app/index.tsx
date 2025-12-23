@@ -1,7 +1,7 @@
 import BillCard from '@/src/components/BillCard';
-import { billOperations } from '@/src/database/database';
+import { billOperations, companyOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
-import { Bill } from '@/src/types';
+import { Bill, CompanyProfile } from '@/src/types';
 import { getDatabaseStats } from '@/src/utils/backup';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 import { DrawerToggleButton } from '@react-navigation/drawer';
@@ -24,6 +24,7 @@ export default function HomeScreen() {
   });
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [profileCompleted, setProfileCompleted] = useState(false);
 
   const loadData = async () => {
     try {
@@ -51,8 +52,19 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       loadData();
+      checkProfileCompleted();
     }, [])
   );
+
+  const checkProfileCompleted = async () => {
+    const companyInfo = await companyOperations.getProfile() as CompanyProfile;
+    console.log({ companyInfo: companyInfo ? true : false });
+    if (!!companyInfo) {
+      setProfileCompleted(false)
+    } else {
+      setProfileCompleted(true)
+    }
+  }
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -65,6 +77,29 @@ export default function HomeScreen() {
     } catch (error) {
       Alert.alert('Error', 'Failed to generate PDF');
     }
+  };
+
+  const handleDelete = (bill: Bill) => {
+    Alert.alert(
+      t('deleteBill'),
+      t('deleteBillConfirm', { name: bill.id }),
+      [
+        { text: t('cancel'), style: 'cancel' },
+        {
+          text: t('delete'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await billOperations.delete(bill.id);
+              loadData();
+              Alert.alert(t('success'), t('billDeleted'));
+            } catch (error) {
+              Alert.alert(t('error'), t('failedToDeleteBill'));
+            }
+          }
+        }
+      ]
+    );
   };
 
   const formatCurrency = (amount: number) => {
@@ -92,6 +127,10 @@ export default function HomeScreen() {
           <Text style={styles.subtitle}>{t('welcomeBack')}</Text>
         </View>
       </View>
+
+      {profileCompleted && <View style={[styles.summaryCard, styles.warningCard]}>
+        <Text style={styles.warningTax}>{t('completeProfileForPDF')}</Text>
+      </View>}
 
       <ScrollView
         style={styles.content}
@@ -154,6 +193,7 @@ export default function HomeScreen() {
                   bill={bill}
                   onUpdate={loadData}
                   onGeneratePDF={handleGeneratePDF}
+                  handleDelete={handleDelete}
                 />
               ))}
             </View>
@@ -299,6 +339,15 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: '#6B7280',
+  },
+  warningTax: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#EF4444',
+  },
+  warningCard: {
+    margin: 16,
+    marginBottom: 0
   },
   summaryCard: {
     backgroundColor: '#FFFFFF',

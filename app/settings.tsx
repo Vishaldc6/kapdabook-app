@@ -175,9 +175,7 @@ export default function SettingsScreen() {
             <SettingsIcon size={24} color="#6B7280" />
             <View style={styles.actionInfo}>
               <Text style={styles.actionTitle}>{t('selectLanguage')}</Text>
-              <Text style={styles.actionDescription}>
-                {language === 'en' ? t('english') : t('hindi')}
-              </Text>
+              <Text style={styles.actionDescription}>{t(language)}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -245,6 +243,7 @@ export default function SettingsScreen() {
 
             <LanguageOption lang="en" label={t('english')} />
             <LanguageOption lang="hi" label={t('hindi')} />
+            <LanguageOption lang="gu" label={t('gujarati')} />
 
             <TouchableOpacity
               style={styles.languageModalCloseButton}

@@ -1,7 +1,8 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
-import { Bill } from '@/src/types';
+import { Bill, CompanyProfile } from '@/src/types';
+import { companyOperations } from '../database/database';
 
 const numberToWords = (num: number): string => {
   const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
@@ -31,19 +32,20 @@ const numberToWords = (num: number): string => {
 };
 
 export const generateBillPDF = async (bill: Bill) => {
-  const companyInfo = {
-    name: 'Vimal Textiles',
-    tagline: 'Shree Ganeshay Namah',
-    address: '127-128, Prabhudarshan Ind., Ved Road, Surat-395004',
-    contact: 'Mo. 95109 88597',
-    gst: 'GST NO. 24AKPPM0065J1Z1',
-    pan: 'PAN NO. AKPPM0065J',
-    businessType: 'MFG & Delers in Art Silk Cloth',
-    bankName: 'The Sutex Co-operative Bank Ltd.',
-    accountNo: '002010021001351',
-    ifsc: 'SUTB0248020',
-    branch: 'Jahangirpura'
-  };
+  const companyInfo = await companyOperations.getProfile() as CompanyProfile;
+  // const companyInfo = {
+  //   name: 'Vimal Textiles',
+  //   tagline: 'Shree Ganeshay Namah',
+  //   address: '127-128, Prabhudarshan Ind., Ved Road, Surat-395004',
+  //   contact: 'Mo. 95109 88597',
+  //   gst: 'GST NO. 24AKPPM0065J1Z1',
+  //   pan: 'PAN NO. AKPPM0065J',
+  //   business_type: 'MFG & Delers in Art Silk Cloth',
+  //   bankName: 'The Sutex Co-operative Bank Ltd.',
+  //   account_no: '002010021001351',
+  //   ifsc: 'SUTB0248020',
+  //   branch: 'Jahangirpura'
+  // };
 
   const billDate = new Date(bill.date).toLocaleDateString('en-IN');
   const baseAmount = bill.meter * bill.price_rate;
@@ -52,12 +54,29 @@ export const generateBillPDF = async (bill: Bill) => {
   const gstAmount = (baseAmount * gstPercentage) / 100;
   const totalAmount = baseAmount + gstAmount;
 
-  let gstRows = `
-    <tr>
-      <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">${bill.tax_name} @ ${bill.tax_percentage}%</td>
-      <td style="text-align: right; padding: 8px;">₹${gstAmount.toFixed(2)}</td>
-    </tr>
-  `;
+  let gstRows = '';
+
+  if (bill.tax_name?.toLowerCase() === 'igst') {
+    gstRows += `
+      <tr>
+        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add IGST @ ${gstPercentage}%</td>
+        <td style="text-align: right; padding: 8px;">₹${gstAmount.toFixed(2)}</td>
+      </tr>
+    `;
+  } else {
+    const halfGst = gstPercentage / 2;
+    const halfGstAmount = gstAmount / 2;
+    gstRows += `
+      <tr>
+        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add CGST @ ${halfGst}%</td>
+        <td style="text-align: right; padding: 8px;">₹${halfGstAmount.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add SGST @ ${halfGst}%</td>
+        <td style="text-align: right; padding: 8px;">₹${halfGstAmount.toFixed(2)}</td>
+      </tr>
+    `;
+  }
 
   const amountInWords = numberToWords(totalAmount);
 
@@ -216,8 +235,8 @@ export const generateBillPDF = async (bill: Bill) => {
         }
 
         .signature-box {
-          width: 48%;
-          height: 48%;
+          width: 50%;
+          height: 50%;
           border: 1px solid #000;
           padding: 15px;
           text-align: center;
@@ -272,16 +291,16 @@ export const generateBillPDF = async (bill: Bill) => {
     </head>
     <body>
       <div class="header">
-        <div class="tagline">${companyInfo.tagline}</div>
+        <div class="tagline">${companyInfo?.tagline}</div>
         <div class="company-name">${companyInfo.name}</div>
-        <div class="business-type">${companyInfo.businessType}</div>
+        <div class="business-type">${companyInfo.business_type}</div>
         <div class="company-details">
           ${companyInfo.address}<br>
-          ${companyInfo.contact}
+          Mo. ${companyInfo.contact}
         </div>
         <div class="gst-pan">
-          ${companyInfo.gst}<br>
-          ${companyInfo.pan}
+          GST NO. ${companyInfo.gst}<br>
+          PAN NO. ${companyInfo.pan}
         </div>
       </div>
 
@@ -355,20 +374,15 @@ export const generateBillPDF = async (bill: Bill) => {
       <div class="footer-container">
         <div class="footer-left">
           <div class="bank-details">
-            <strong>${companyInfo.bankName}</strong><br>
-            A/c No.: ${companyInfo.accountNo}<br>
+            <strong>${companyInfo.bank_name}</strong><br>
+            A/c No.: ${companyInfo.account_no}<br>
             IFSC: ${companyInfo.ifsc}<br>
             Branch: ${companyInfo.branch}
           </div>
 
           <div class="terms-section">
             <div class="terms-title">Terms & Conditions</div>
-            <ol class="terms-list">
-              <li>No claim of dispute arising from charge in quality or shortage in meters or any cash what so ever will be entertained once the goods are delivered.</li>
-              <li>The payment of this should be made in case against delivery filling which the interest at 2% per month shall be charge from date of bill.</li>
-              <li>The goods are Despatched at your Risk.</li>
-              <li>Subject to Surat Jurisdiction.</li>
-            </ol>
+            <div class="terms-list">${companyInfo.terms_conditions}</div>
           </div>
 
           <div class="no-dyeing">No Dyeing Guarantee</div>

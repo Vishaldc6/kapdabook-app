@@ -35,6 +35,107 @@ export const getDatabase = async () => {
   return initializing;
 };
 
+// Database operations for Company
+export const companyOperations = {
+  getProfile: async () => {
+    const db = await getDatabase();
+    const [profile] = await db.getAllAsync('SELECT * FROM CompanyProfile LIMIT 1');
+    return profile ?? null;
+  },
+  saveProfile: async (data: {
+    name: string;
+    tagline?: string;
+    address: string;
+    contact: string;
+    gst: string;
+    pan: string;
+    business_type: string;
+    bankName: string;
+    accountNo: string;
+    ifsc: string;
+    branch: string;
+    termsConditions: string;
+  }) => {
+    const db = await getDatabase();
+
+    // Check if profile already exists
+    const [existing] = await db.getAllAsync(
+      'SELECT id FROM CompanyProfile WHERE id = 1'
+    );
+
+    if (existing) {
+      // UPDATE
+      await db.runAsync(
+        `
+        UPDATE CompanyProfile SET
+          name = ?,
+          tagline = ?,
+          address = ?,
+          contact = ?,
+          gst = ?,
+          pan = ?,
+          business_type = ?,
+          bank_name = ?,
+          account_no = ?,
+          ifsc = ?,
+          branch = ?,
+          terms_conditions = ?
+        WHERE id = 1
+        `,
+        [
+          data.name,
+          data.tagline ?? '',
+          data.address,
+          data.contact,
+          data.gst,
+          data.pan,
+          data.business_type,
+          data.bankName,
+          data.accountNo,
+          data.ifsc,
+          data.branch,
+          data.termsConditions,
+        ]
+      );
+    } else {
+      // INSERT (first time)
+      await db.runAsync(
+        `
+        INSERT INTO CompanyProfile (
+          id,
+          name,
+          tagline,
+          address,
+          contact,
+          gst,
+          pan,
+          business_type,
+          bank_name,
+          account_no,
+          ifsc,
+          branch,
+          terms_conditions
+        ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
+        [
+          data.name,
+          data.tagline ?? '',
+          data.address,
+          data.contact,
+          data.gst,
+          data.pan,
+          data.business_type,
+          data.bankName,
+          data.accountNo,
+          data.ifsc,
+          data.branch,
+          data.termsConditions,
+        ]
+      );
+    }
+  },
+};
+
 // Database operations for Buyers
 export const buyerOperations = {
   getAll: async () => {
@@ -292,6 +393,42 @@ export const billOperations = {
       bill.tax_amount,
     ]);
     return result.lastInsertRowId;
+  },
+
+  update: async (id: number, bill: {
+    date: string;
+    buyer_id: number;
+    dalal_id: number;
+    material_id: number;
+    meter: number;
+    price_rate: number;
+    dhara_id: number;
+    chalan_no: string;
+    taka_count: number;
+    tax_id: number;
+    base_amount: number;
+    tax_amount: number;
+  }) => {
+    const db = await getDatabase();
+
+    return await db.runAsync(`
+      UPDATE Bill SET date = ?, buyer_id = ?, dalal_id = ?, material_id = ?, meter = ?, price_rate = ?, dhara_id = ?, chalan_no = ?, taka_count = ?, tax_id = ?, base_amount = ?, tax_amount = ? WHERE id = ?`,
+      [
+        bill.date,
+        bill.buyer_id,
+        bill.dalal_id,
+        bill.material_id,
+        bill.meter,
+        bill.price_rate,
+        bill.dhara_id,
+        bill.chalan_no,
+        bill.taka_count,
+        bill.tax_id,
+        bill.base_amount,
+        bill.tax_amount,
+        id,
+      ]
+    );
   },
 
   markAsPaid: async (id: number) => {

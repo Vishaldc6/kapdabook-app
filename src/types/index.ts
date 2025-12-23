@@ -50,6 +50,7 @@ export interface Tax {
 
 export interface Bill {
   id: number;
+  bill_no: number;
   date: string;
   buyer_id: number;
   dalal_id: number;
@@ -63,6 +64,7 @@ export interface Bill {
   payment_received: boolean;
   // Joined fields
   buyer_name?: string;
+  buyer_address?: string;
   buyer_gst?: string;
   dalal_name?: string;
   material_name?: string;

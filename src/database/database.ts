@@ -8,7 +8,7 @@ export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (database) return database;
 
   try {
-    database = await SQLite.openDatabaseAsync('textile_billing_v1_temp.db');
+    database = await SQLite.openDatabaseAsync('textile_billing_v2_temp.db');
 
     // Enable foreign keys
     await database.execAsync('PRAGMA foreign_keys = ON;');
@@ -313,6 +313,7 @@ export const billOperations = {
     return await db.getAllAsync(`
       SELECT b.*, 
              buyer.name as buyer_name,
+             buyer.address as buyer_address,
              buyer.gst_number as buyer_gst,
              dalal.name as dalal_name, 
              m.name as material_name,
@@ -338,6 +339,7 @@ export const billOperations = {
     return await db.getAllAsync(`
       SELECT b.*, 
              buyer.name as buyer_name,
+             buyer.address as buyer_address,
              buyer.gst_number as buyer_gst,
              dalal.name as dalal_name,
              m.name as material_name,
@@ -362,6 +364,7 @@ export const billOperations = {
 
   create: async (bill: {
     date: string;
+    bill_no: number;
     buyer_id: number;
     dalal_id: number;
     material_id: number;
@@ -376,10 +379,11 @@ export const billOperations = {
   }) => {
     const db = await getDatabase();
     const result = await db.runAsync(`
-      INSERT INTO Bill (date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, tax_id, base_amount, tax_amount, payment_received)
+      INSERT INTO Bill (date, bill_no, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, tax_id, base_amount, tax_amount, payment_received)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
     `, [
       bill.date,
+      bill.bill_no,
       bill.buyer_id,
       bill.dalal_id,
       bill.material_id,
@@ -397,6 +401,7 @@ export const billOperations = {
 
   update: async (id: number, bill: {
     date: string;
+    bill_no: number;
     buyer_id: number;
     dalal_id: number;
     material_id: number;
@@ -412,9 +417,10 @@ export const billOperations = {
     const db = await getDatabase();
 
     return await db.runAsync(`
-      UPDATE Bill SET date = ?, buyer_id = ?, dalal_id = ?, material_id = ?, meter = ?, price_rate = ?, dhara_id = ?, chalan_no = ?, taka_count = ?, tax_id = ?, base_amount = ?, tax_amount = ? WHERE id = ?`,
+      UPDATE Bill SET date = ?, bill_no = ?, buyer_id = ?, dalal_id = ?, material_id = ?, meter = ?, price_rate = ?, dhara_id = ?, chalan_no = ?, taka_count = ?, tax_id = ?, base_amount = ?, tax_amount = ? WHERE id = ?`,
       [
         bill.date,
+        bill.bill_no,
         bill.buyer_id,
         bill.dalal_id,
         bill.material_id,

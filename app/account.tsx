@@ -35,8 +35,7 @@ export default function AccountScreen() {
 
     const loadAccountDetails = async () => {
         const companyInfo = await companyOperations.getProfile() as CompanyProfile;
-        console.log("🚀 ~ generateBillPDF ~ companyInfo:", { companyInfo })
-        setFormData({
+        companyInfo && setFormData({
             // company
             name: companyInfo.name,
             tagline: companyInfo?.tagline ?? '',

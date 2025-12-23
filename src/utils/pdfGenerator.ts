@@ -86,7 +86,7 @@ export const generateBillPDF = async (bill: Bill) => {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Bill #${bill.id}</title>
+      <title>Bill #${bill.bill_no}</title>
       <style>
         * {
           margin: 0;
@@ -236,7 +236,7 @@ export const generateBillPDF = async (bill: Bill) => {
 
         .signature-box {
           width: 50%;
-          height: 50%;
+          height: 120px;
           border: 1px solid #000;
           padding: 15px;
           text-align: center;
@@ -311,11 +311,11 @@ export const generateBillPDF = async (bill: Bill) => {
           <div class="info-label">Name</div>
           <div class="info-value">${bill.buyer_name}</div>
           <div class="info-label" style="width: 100px;">Bill No.</div>
-          <div class="info-value" style="width: 120px;">${bill.id}</div>
+          <div class="info-value" style="width: 120px;">${bill.bill_no}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Address</div>
-          <div class="info-value">-</div>
+          <div class="info-value">${bill.buyer_address}</div>
           <div class="info-label" style="width: 100px;">Invoice Date</div>
           <div class="info-value" style="width: 120px;">${billDate}</div>
         </div>
@@ -422,7 +422,7 @@ export const generateBillPDF = async (bill: Bill) => {
       await Sharing.shareAsync(uri, {
         UTI: '.pdf',
         mimeType: 'application/pdf',
-        dialogTitle: `Bill #${bill.id} - ${bill.buyer_name}`
+        dialogTitle: `Bill #${bill.bill_no} - ${bill.buyer_name}`
       });
     }
 

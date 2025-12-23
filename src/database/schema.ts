@@ -58,6 +58,7 @@ export const createTables = `
   -- Create Bill table
   CREATE TABLE IF NOT EXISTS Bill (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    bill_no INTEGER NOT NULL,
     date DATE NOT NULL,
     buyer_id INTEGER NOT NULL,
     dalal_id INTEGER NOT NULL,
@@ -105,7 +106,7 @@ INSERT OR IGNORE INTO Buyer (id, name, address, contact_number, gst_number ) VAL
          (1, 'Kishan Patel', 'Katargam, Surat', '7418529635'),
          (2, 'Ramesh Rathod', 'VIP road, Navasari', '796584569');
 
-     INSERT OR IGNORE INTO Bill (date, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id, base_amount, tax_amount ) VALUES
-         ('2025-08-05', 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1, 10000, 1000),
-         ('2025-09-04', 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2, 10000, 1000);
+     INSERT OR IGNORE INTO Bill (date, bill_no, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id, base_amount, tax_amount ) VALUES
+         ('2025-08-05', 51, 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1, 10000, 1000),
+         ('2025-09-04', 52, 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2, 10000, 1000);
 */

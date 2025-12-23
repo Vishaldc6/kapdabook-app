@@ -29,7 +29,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
   const handleMarkAsPaid = () => {
     Alert.alert(
       t('markAsPaid'),
-      t('markBillPaid', { id: bill.id }),
+      t('markBillPaid', { id: bill.bill_no }),
       [
         { text: t('cancel'), style: 'cancel' },
         {
@@ -58,7 +58,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
   return (
     <View style={[styles.card, { borderLeftColor: getStatusColor() }]}>
       <View style={styles.header}>
-        <Text style={styles.billNumber}>Bill #{bill.id}</Text>
+        <Text style={styles.billNumber}>Bill #{bill.bill_no}</Text>
         <Text style={[styles.status, { color: getStatusColor() }]}>
           {bill.payment_received ? 'PAID' : isOverdue ? 'OVERDUE' : isDueSoon ? 'DUE SOON' : 'PENDING'}
         </Text>

@@ -28,6 +28,7 @@ export default function BillsScreen() {
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
+    bill_no: '',
     buyer_id: 0,
     dalal_id: 0,
     material_id: 0,
@@ -74,6 +75,7 @@ export default function BillsScreen() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
+    if (!formData.bill_no) newErrors.bill_no = t('billNoRequired');
     if (!formData.buyer_id) newErrors.buyer_id = t('buyerRequired');
     if (!formData.dalal_id) newErrors.dalal_id = t('dalalRequired');
     if (!formData.material_id) newErrors.material_id = t('materialRequired');
@@ -85,6 +87,9 @@ export default function BillsScreen() {
     if (!formData.tax_id) newErrors.tax_id = t('gstRequired');
 
     // Validate numeric fields
+    if ((formData.bill_no && isNaN(parseInt(formData.bill_no))) || parseInt(formData.bill_no) <= 0) {
+      newErrors.bill_no = t('billNoValidation');
+    }
     if (formData.meter && isNaN(parseFloat(formData.meter))) {
       newErrors.meter = t('meterValidation');
     }
@@ -108,6 +113,7 @@ export default function BillsScreen() {
 
       const payloadData = {
         date: formData.date,
+        bill_no: parseInt(formData.bill_no),
         buyer_id: formData.buyer_id,
         dalal_id: formData.dalal_id,
         material_id: formData.material_id,
@@ -140,6 +146,7 @@ export default function BillsScreen() {
   const resetForm = () => {
     setFormData({
       date: new Date().toISOString().split('T')[0],
+      bill_no: '',
       buyer_id: 0,
       dalal_id: 0,
       material_id: 0,
@@ -163,6 +170,7 @@ export default function BillsScreen() {
     setEditingBill(bill);
     setFormData({
       date: bill.date,
+      bill_no: bill.bill_no.toString(),
       buyer_id: bill.buyer_id,
       dalal_id: bill.dalal_id,
       material_id: bill.material_id,
@@ -179,7 +187,7 @@ export default function BillsScreen() {
   const handleDelete = (bill: Bill) => {
     Alert.alert(
       t('deleteBill'),
-      t('deleteBillConfirm', { name: bill.id }),
+      t('deleteBillConfirm'),
       [
         { text: t('cancel'), style: 'cancel' },
         {
@@ -307,6 +315,15 @@ export default function BillsScreen() {
                   onChange={handleDateChange}
                 />
               )}
+
+              <FormInput
+                label={t('billNo')}
+                value={formData.bill_no}
+                onChangeText={(text) => setFormData({ ...formData, bill_no: text })}
+                keyboardType="numeric"
+                error={errors.bill_no}
+                required
+              />
 
               <Picker
                 label={t('buyer')}

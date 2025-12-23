@@ -82,7 +82,7 @@ export default function HomeScreen() {
   const handleDelete = (bill: Bill) => {
     Alert.alert(
       t('deleteBill'),
-      t('deleteBillConfirm', { name: bill.id }),
+      t('deleteBillConfirm'),
       [
         { text: t('cancel'), style: 'cancel' },
         {

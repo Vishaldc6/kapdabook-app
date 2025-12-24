@@ -5,20 +5,21 @@ interface FormInputProps extends TextInputProps {
   label: string;
   error?: string;
   required?: boolean;
+  children?: React.ReactNode;
 }
 
-export default function FormInput({ label, error, required, ...props }: FormInputProps) {
+export default function FormInput({ label, error, required, children, ...props }: FormInputProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>
         {label}
         {required && <Text style={styles.required}> *</Text>}
       </Text>
-      <TextInput
+      {children ?? <TextInput
         style={[styles.input, error && styles.inputError]}
         placeholderTextColor="#9CA3AF"
         {...props}
-      />
+      />}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );

@@ -214,14 +214,14 @@ export default function SettingsScreen() {
               <Text style={styles.infoLabel}>{t('version')}</Text>
               <Text style={styles.infoValue}>1.0.0</Text>
             </View>
-            <View style={styles.infoRow}>
+            {/* <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('databaseEngine')}</Text>
               <Text style={styles.infoValue}>SQLite</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('platform')}</Text>
               <Text style={styles.infoValue}>React Native</Text>
-            </View>
+            </View> */}
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('lastBackup')}</Text>
               <Text style={styles.infoValue}>{t('never')}</Text>

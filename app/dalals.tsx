@@ -3,7 +3,7 @@ import { dalalOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dalal } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
-import { CreditCard as Edit, Plus, Trash2, User } from 'lucide-react-native';
+import { Edit, Plus, Trash2, User } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -192,6 +192,7 @@ export default function DalalsScreen() {
                 onChangeText={(text) => setFormData({ ...formData, contact_number: text })}
                 keyboardType="phone-pad"
                 error={errors.contact_number}
+                maxLength={10}
                 required
               />
 

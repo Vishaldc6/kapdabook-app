@@ -109,4 +109,9 @@ INSERT OR IGNORE INTO Buyer (id, name, address, contact_number, gst_number ) VAL
      INSERT OR IGNORE INTO Bill (date, bill_no, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id, base_amount, tax_amount ) VALUES
          ('2025-08-05', 51, 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1, 10000, 1000),
          ('2025-09-04', 52, 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2, 10000, 1000);
+
+         INSERT OR IGNORE INTO Bill (date, bill_no, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, payment_received, tax_id, base_amount, tax_amount ) VALUES
+         ('2025-08-05', 61, 2, 1, 3, 50, 200, 2, 8526, 120, 0, 1, 10000, 1000),
+         ('2025-09-04', 62, 1, 1, 1, 100, 50, 1, 7485, 200, 1, 2, 5000, 500),
+         ('2025-10-04', 63, 1, 2, 1, 400, 50, 1, 7485, 200, 1, 2, 20000, 2000);
 */

@@ -380,7 +380,7 @@ export const billOperations = {
     const db = await getDatabase();
     const result = await db.runAsync(`
       INSERT INTO Bill (date, bill_no, buyer_id, dalal_id, material_id, meter, price_rate, dhara_id, chalan_no, taka_count, tax_id, base_amount, tax_amount, payment_received)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
     `, [
       bill.date,
       bill.bill_no,

@@ -39,7 +39,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
               await billOperations.markAsPaid(bill.id);
               onUpdate();
             } catch (error) {
-              Alert.alert(t('error'), 'Failed to update bill');
+              Alert.alert(t('error'), t('failedToUpdateBill'));
             }
           }
         }
@@ -58,9 +58,15 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
   return (
     <View style={[styles.card, { borderLeftColor: getStatusColor() }]}>
       <View style={styles.header}>
-        <Text style={styles.billNumber}>Bill #{bill.bill_no}</Text>
+        <Text style={styles.billNumber}>{t('bill')} #{bill.bill_no}</Text>
         <Text style={[styles.status, { color: getStatusColor() }]}>
-          {bill.payment_received ? 'PAID' : isOverdue ? 'OVERDUE' : isDueSoon ? 'DUE SOON' : 'PENDING'}
+          {bill.payment_received
+            ? t('paid')
+            : isOverdue
+              ? t('overdue')
+              : isDueSoon
+                ? t('dueSoon')
+                : t('pending')}
         </Text>
       </View>
 
@@ -91,7 +97,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
 
       <View style={styles.row}>
         <IndianRupee size={16} color="#6B7280" />
-        <Text style={styles.label}>Amount:</Text>
+        <Text style={styles.label}>{t('amount')}:</Text>
         <Text style={[styles.amount, { color: getStatusColor() }]}>
           {formatAmount(bill.total_amount || 0)}
         </Text>
@@ -99,7 +105,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
 
       <View style={styles.row}>
         <Calendar size={16} color="#6B7280" />
-        <Text style={styles.label}>Due Date:</Text>
+        <Text style={styles.label}>{t('dueDate')}:</Text>
         <Text style={[styles.value, { color: getStatusColor() }]}>
           {new Date(bill.due_date || '').toLocaleDateString()}
         </Text>

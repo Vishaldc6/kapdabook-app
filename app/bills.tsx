@@ -13,6 +13,17 @@ import { useLanguage } from '@/src/hook/useLanguage';
 import { Bill, Buyer, Dalal, Dhara, Material, Tax } from '@/src/types';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 
+type BillTypeFilter = 'all' | 'paid' | 'pending';
+
+type BillFilters = {
+  buyerId?: number;
+  fromDate?: string;
+  toDate?: string;
+  billType: BillTypeFilter;
+};
+
+type DateTarget = 'form' | 'filter-from' | 'filter-to';
+
 export default function BillsScreen() {
   const { t } = useLanguage();
   const [bills, setBills] = useState<Bill[]>([]);
@@ -40,9 +51,16 @@ export default function BillsScreen() {
     tax_id: 0
   });
 
-  const [filter, setFilter] = useState<'all' | 'pending' | 'paid'>('all');
+  const [appliedFilter, setAppliedFilter] = useState<BillFilters>({
+    billType: 'all'
+  });
+  const [draftFilter, setDraftFilter] = useState<BillFilters>({
+    billType: 'all'
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState<
+    'form' | 'filter-from' | 'filter-to' | null
+  >(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -68,7 +86,7 @@ export default function BillsScreen() {
       setDharas(dharasData as Dhara[]);
       setTaxes(taxData as Tax[]);
     } catch (error) {
-      Alert.alert(t('error'), 'Failed to load data');
+      Alert.alert(t('error'), t('failedToLoadBills'));
     }
   };
 
@@ -216,18 +234,41 @@ export default function BillsScreen() {
   };
 
   const filteredBills = bills.filter(bill => {
-    if (filter === 'pending') return !bill.payment_received;
-    if (filter === 'paid') return bill.payment_received;
+    if (appliedFilter.billType === 'pending' && bill.payment_received) return false;
+    if (appliedFilter.billType === 'paid' && !bill.payment_received) return false;
+
+    if (appliedFilter.buyerId && bill.buyer_id !== appliedFilter.buyerId) return false;
+
+    if (appliedFilter.fromDate && bill.date < appliedFilter.fromDate) return false;
+    if (appliedFilter.toDate && bill.date > appliedFilter.toDate) return false;
+
     return true;
   });
 
-  const handleDateChange = (_event: any, selectedDate?: Date) => {
+  const handleDateChange = (
+    _event: any,
+    selectedDate?: Date,
+    target?: DateTarget
+  ) => {
+    console.log({ selectedDate, target });
+
     if (Platform.OS === 'android') {
-      setShowDatePicker(false);
+      setShowDatePicker(null);
     }
-    if (selectedDate) {
-      const isoDate = selectedDate.toISOString().split('T')[0];
-      setFormData({ ...formData, date: isoDate });
+    if (!selectedDate) return;
+
+    const isoDate = selectedDate.toISOString().split('T')[0];
+
+    if (target === 'form') {
+      setFormData(prev => ({ ...prev, date: isoDate }));
+    }
+
+    if (target === 'filter-from') {
+      setDraftFilter(prev => ({ ...prev, fromDate: isoDate }));
+    }
+
+    if (target === 'filter-to') {
+      setDraftFilter(prev => ({ ...prev, toDate: isoDate }));
     }
   };
 
@@ -236,6 +277,8 @@ export default function BillsScreen() {
   const materialItems = materials.map(material => ({ label: material.name, value: material.id }));
   const dharaItems = dharas.map(dhara => ({ label: dhara.dhara_name, value: dhara.id }));
   const taxItems = taxes.map(tax => ({ label: tax.name, value: tax.id }));
+
+  const buyerFilterItems = [{ label: t('allBuyers'), value: undefined }, ...buyerItems,];
 
   return (
     <View style={styles.container}>
@@ -268,8 +311,8 @@ export default function BillsScreen() {
             <ReceiptIndianRupee size={48} color="#9CA3AF" />
             <Text style={styles.emptyTitle}>{t('noBillsFound')}</Text>
             <Text style={styles.emptySubtitle}>
-              {filter === 'all' ? t('createFirstBill') :
-                filter === 'pending' ? t('noPendingBills') : t('noPaidBills')}
+              {appliedFilter.billType === 'all' ? t('createFirstBill') :
+                appliedFilter.billType === 'pending' ? t('noPendingBills') : t('noPaidBills')}
             </Text>
           </View>
         ) : (
@@ -300,24 +343,25 @@ export default function BillsScreen() {
             <Text style={styles.modalTitle}>{t(editingBill ? 'updateBill' : 'createNewBill')}</Text>
 
             <ScrollView style={styles.modalForm}>
-              <TouchableOpacity activeOpacity={1} onPress={() => setShowDatePicker(true)}>
+              <TouchableOpacity activeOpacity={1} onPress={() => setShowDatePicker('form')}>
                 <FormInput
                   label={t('date')}
                   value={formData.date}
+                  placeholder={t('datePlaceholder')}
                   editable={false}
-                  placeholder="YYYY-MM-DD"
                 />
               </TouchableOpacity>
               {showDatePicker && (
                 <DateTimePicker
                   value={new Date(formData.date)}
                   mode="date"
-                  onChange={handleDateChange}
+                  onChange={(e, d) => handleDateChange(e, d, 'form')}
                 />
               )}
 
               <FormInput
                 label={t('billNo')}
+                placeholder={t('billNoPlaceholder')}
                 value={formData.bill_no}
                 onChangeText={(text) => setFormData({ ...formData, bill_no: text })}
                 keyboardType="numeric"
@@ -355,6 +399,7 @@ export default function BillsScreen() {
               <FormInput
                 label={t('meter')}
                 value={formData.meter}
+                placeholder={t('meterPlaceholder')}
                 onChangeText={(text) => setFormData({ ...formData, meter: text })}
                 keyboardType="numeric"
                 error={errors.meter}
@@ -364,6 +409,7 @@ export default function BillsScreen() {
               <FormInput
                 label={t('priceRate')}
                 value={formData.price_rate}
+                placeholder={t('priceRatePlaceholder')}
                 onChangeText={(text) => setFormData({ ...formData, price_rate: text })}
                 keyboardType="numeric"
                 error={errors.price_rate}
@@ -382,6 +428,7 @@ export default function BillsScreen() {
               <FormInput
                 label={t('chalanNumber')}
                 value={formData.chalan_no}
+                placeholder={t('chalanPlaceholder')}
                 onChangeText={(text) => setFormData({ ...formData, chalan_no: text })}
                 error={errors.chalan_no}
                 required
@@ -390,6 +437,7 @@ export default function BillsScreen() {
               <FormInput
                 label={t('takaCount')}
                 value={formData.taka_count}
+                placeholder={t('takaCountPlaceholder')}
                 onChangeText={(text) => setFormData({ ...formData, taka_count: text })}
                 keyboardType="numeric"
                 error={errors.taka_count}
@@ -428,28 +476,106 @@ export default function BillsScreen() {
         <View style={styles.filterModalOverlay}>
           <View style={styles.filterModalContent}>
             <Text style={styles.filterModalTitle}>{t('filterBills')}</Text>
+            <FormInput
+              label={t('typeOfBill')}
+              children={<View style={styles.filterOptionContainer}>
+                {(['all', 'pending', 'paid'] as const).map((filterType) => (
+                  <TouchableOpacity
+                    key={filterType}
+                    style={[styles.filterOption, draftFilter.billType === filterType && styles.filterOptionSelected]}
+                    onPress={() => {
+                      setDraftFilter({
+                        ...draftFilter,
+                        billType: filterType
+                      });
+                    }}
+                  >
+                    <Text style={[styles.filterOptionText, draftFilter.billType === filterType && styles.filterOptionTextSelected]}>
+                      {filterType === 'all' ? t('allBills') :
+                        filterType === 'pending' ? t('pendingBillsFilter') : t('paidBills')}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
 
-            {(['all', 'pending', 'paid'] as const).map((filterType) => (
-              <TouchableOpacity
-                key={filterType}
-                style={[styles.filterOption, filter === filterType && styles.filterOptionSelected]}
-                onPress={() => {
-                  setFilter(filterType);
-                  setFilterModalVisible(false);
-                }}
-              >
-                <Text style={[styles.filterOptionText, filter === filterType && styles.filterOptionTextSelected]}>
-                  {filterType === 'all' ? t('allBills') :
-                    filterType === 'pending' ? t('pendingBillsFilter') : t('paidBills')}
-                </Text>
-              </TouchableOpacity>
-            ))}
+              </View>}
+            />
+
+            <TouchableOpacity activeOpacity={1} onPress={() => setShowDatePicker('filter-from')}>
+              <FormInput
+                label={t('dateFrom')}
+                value={draftFilter.fromDate}
+                editable={false}
+                placeholder="YYYY-MM-DD"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity activeOpacity={1} onPress={() => setShowDatePicker('filter-to')}>
+              <FormInput
+                label={t('dateTo')}
+                value={draftFilter.toDate}
+                editable={false}
+                placeholder="YYYY-MM-DD"
+              />
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={
+                  showDatePicker === 'filter-from'
+                    ? draftFilter.fromDate
+                      ? new Date(draftFilter.fromDate)
+                      : new Date()
+                    : showDatePicker === 'filter-to'
+                      ? draftFilter.toDate
+                        ? new Date(draftFilter.toDate)
+                        : new Date()
+                      : new Date()
+                }
+                mode="date"
+                onChange={(e, d) => handleDateChange(e, d, showDatePicker)}
+              />
+            )}
+
+            <Picker
+              label={t('buyer')}
+              selectedValue={draftFilter.buyerId}
+              items={buyerFilterItems}
+              onValueChange={(value) => setDraftFilter({
+                ...draftFilter,
+                buyerId: value
+              })}
+            />
+
+            <TouchableOpacity
+              style={[styles.filterModalCloseButton, { backgroundColor: '#2563EB' }]}
+              onPress={() => {
+                setAppliedFilter(draftFilter);
+                setFilterModalVisible(false);
+              }}
+            >
+              <Text style={{ color: '#fff', fontWeight: '600' }}>
+                {t('applyFilter')}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.filterModalCloseButton}
+              onPress={() => {
+                const reset = { billType: 'all' as BillTypeFilter };
+                setDraftFilter(reset);
+                setAppliedFilter(reset);
+              }}
+            >
+              <Text style={styles.filterModalText}>
+                {t('reset')}
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.filterModalCloseButton}
               onPress={() => setFilterModalVisible(false)}
             >
-              <Text style={styles.filterModalCloseText}>{t('close')}</Text>
+              <Text style={styles.filterModalText}>{t('close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -596,7 +722,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     width: '100%',
-    maxWidth: 300,
   },
   filterModalTitle: {
     fontSize: 18,
@@ -605,10 +730,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
+  filterOptionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   filterOption: {
     padding: 12,
     borderRadius: 8,
-    marginBottom: 8,
     backgroundColor: '#F9FAFB',
   },
   filterOptionSelected: {
@@ -630,7 +758,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  filterModalCloseText: {
+  filterModalText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#6B7280',

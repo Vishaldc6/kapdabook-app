@@ -3,23 +3,45 @@ import { createTables, insertDefaultData } from './schema';
 
 let database: SQLite.SQLiteDatabase | null = null;
 let initializing: Promise<SQLite.SQLiteDatabase> | null = null;
+const DB_NAME = 'textile_billing_v2_temp.db';
+
+/**
+ * Check if at least one app table exists
+ */
+const isFreshDatabase = async (db: SQLite.SQLiteDatabase): Promise<boolean> => {
+  const result = await db.getAllAsync<{
+    name: string;
+  }>(
+    `SELECT name FROM sqlite_master 
+     WHERE type='table' AND name NOT LIKE 'sqlite_%';`
+  );
+
+  return result.length === 0;
+};
 
 export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (database) return database;
 
   try {
-    database = await SQLite.openDatabaseAsync('textile_billing_v2_temp.db');
+    database = await SQLite.openDatabaseAsync(DB_NAME);
 
     // Enable foreign keys
     await database.execAsync('PRAGMA foreign_keys = ON;');
 
-    // Create tables
-    await database.execAsync(createTables);
+    // Check if DB is fresh
+    const fresh = await isFreshDatabase(database);
 
-    // Insert default data
-    await database.execAsync(insertDefaultData);
+    if (fresh) {
+      console.log('Fresh database detected. Creating schema...');
 
-    console.log('Database initialized successfully');
+      await database.execAsync(createTables);
+      await database.execAsync(insertDefaultData);
+
+      console.log('Schema & default data created');
+    } else {
+      console.log('Existing database detected. Skipping schema creation');
+    }
+
     return database;
   } catch (error) {
     console.error('Failed to initialize database:', error);
@@ -27,12 +49,26 @@ export const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   }
 };
 
+/**
+ * Get database instance (singleton-safe)
+ */
 export const getDatabase = async () => {
   if (database) return database;
   if (!initializing) {
     initializing = initializeDatabase();
   }
   return initializing;
+};
+
+/**
+ * Close & reset DB reference (USED BEFORE IMPORT)
+ */
+export const resetDatabaseInstance = async () => {
+  if (database) {
+    await database.closeAsync();
+    database = null;
+    initializing = null;
+  }
 };
 
 // Database operations for Company

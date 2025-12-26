@@ -3,8 +3,9 @@ import { buyerOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Buyer } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { useFocusEffect } from 'expo-router';
 import { Edit, Plus, Trash2, Users } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function BuyersScreen() {
@@ -20,9 +21,11 @@ export default function BuyersScreen() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    loadBuyers();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadBuyers();
+    }, [])
+  )
 
   const loadBuyers = async () => {
     try {

@@ -1,6 +1,7 @@
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { BadgePercent, Edit, Plus } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import FormInput from '@/src/components/FormInput';
@@ -19,9 +20,11 @@ export default function TaxesScreen() {
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    useEffect(() => {
-        loadTaxes();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadTaxes();
+        }, [])
+    )
 
     const loadTaxes = async () => {
         try {

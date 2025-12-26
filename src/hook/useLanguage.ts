@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 export type Language = 'en' | 'hi' | 'gu';
 
@@ -22,9 +23,11 @@ export const useLanguage = () => {
 export const useLanguageState = () => {
   const [language, setLanguageState] = useState<Language>('en');
 
-  useEffect(() => {
-    loadLanguage();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadLanguage();
+    }, [])
+  )
 
   const loadLanguage = async () => {
     try {
@@ -337,6 +340,17 @@ const getTranslations = (language: Language) => {
       platform: 'Platform',
       lastBackup: 'Last Backup',
       never: 'Never',
+      dataSafetyWarningTitle: 'Data Safety Warning',
+      dataSafetyWarningDesc:
+        'Your data is stored only on this device. Uninstalling the app or clearing storage will erase all buyers, bills, and records. Use Database Backup → Export to keep your data safe.',
+      databaseBackupImport: 'Database Backup Import',
+      databaseBackupImportDesc: 'Restore data from a previous backup file. This will replace your current local database.',
+      import: 'Import',
+      importing: 'Importing...',
+      importSuccessful: 'Import Successful',
+      importSuccessfulDesc: 'Your database has been restored successfully from the backup file.',
+      importFailed: 'Import Failed',
+      importFailedDesc: 'Failed to restore the database. Please try again with a valid backup file.',
 
       // Language
       language: 'Language',
@@ -606,7 +620,7 @@ const getTranslations = (language: Language) => {
       financialSummary: 'पैसों का सारांश',
       dataManagement: 'डेटा प्रबंधन',
       databaseBackup: 'डेटा बैकअप',
-      databaseBackupDesc: 'सभी खरीदार, दलाल, सामग्री और बिल डेटा सहित अपना पूरा डेटाबेस निर्यात करें।',
+      databaseBackupDesc: 'खरीदार, दलाल, सामग्री और बिल से संबंधित पूरा डेटाबेस एक्सपोर्ट करें।',
       export: 'बैकअप निकालें',
       exporting: 'बैकअप हो रहा है...',
       exportSuccessful: 'निर्यात सफल',
@@ -619,6 +633,17 @@ const getTranslations = (language: Language) => {
       platform: 'प्लेटफॉर्म',
       lastBackup: 'अंतिम बैकअप',
       never: 'कभी नहीं',
+      dataSafetyWarningTitle: 'डेटा सुरक्षा चेतावनी',
+      dataSafetyWarningDesc:
+        'आपका डेटा केवल इस डिवाइस में संग्रहीत है। ऐप को अनइंस्टॉल करने या स्टोरेज साफ करने पर सभी खरीदार, बिल और रिकॉर्ड स्थायी रूप से हट जाएंगे। अपना डेटा सुरक्षित रखने के लिए डेटा बैकअप → बैकअप निकालें का उपयोग करें।',
+      databaseBackupImport: 'डेटाबेस बैकअप इम्पोर्ट',
+      databaseBackupImportDesc: 'पिछली बैकअप फ़ाइल से डेटा पुनर्स्थापित करें। इससे आपका वर्तमान लोकल डेटाबेस बदल जाएगा।',
+      import: 'इम्पोर्ट',
+      importing: 'इम्पोर्ट हो रहा है...',
+      importSuccessful: 'इम्पोर्ट सफल',
+      importSuccessfulDesc: 'आपका डेटाबेस बैकअप फ़ाइल से सफलतापूर्वक पुनर्स्थापित हो गया है।',
+      importFailed: 'इम्पोर्ट असफल',
+      importFailedDesc: 'डेटाबेस पुनर्स्थापित नहीं हो सका। कृपया मान्य बैकअप फ़ाइल के साथ पुनः प्रयास करें।',
 
       // Language
       language: 'भाषा',
@@ -889,7 +914,7 @@ const getTranslations = (language: Language) => {
       financialSummary: 'પૈસાનો સારાંશ',
       dataManagement: 'ડેટા મેનેજમેન્ટ',
       databaseBackup: 'ડેટા બેકઅપ',
-      databaseBackupDesc: 'તમારો આખો ડેટા બેકઅપ લો',
+      databaseBackupDesc: 'ખરીદદારો, દલાલો, સામગ્રી અને બિલ્સ સહિતનો સંપૂર્ણ ડેટાબેસ એક્સપોર્ટ કરો.',
       export: 'બેકઅપ કાઢો',
       exporting: 'બેકઅપ થઈ રહ્યું છે...',
       exportSuccessful: 'બેકઅપ સફળ',
@@ -902,6 +927,17 @@ const getTranslations = (language: Language) => {
       platform: 'પ્લેટફોર્મ',
       lastBackup: 'છેલ્લો બેકઅપ',
       never: 'ક્યારેય નહીં',
+      dataSafetyWarningTitle: 'ડેટા સુરક્ષા ચેતવણી',
+      dataSafetyWarningDesc:
+        'તમારો તમામ ડેટા ફક્ત આ ડિવાઇસમાં જ સંગ્રહિત છે. એપ અનઇન્સ્ટોલ કરવાથી અથવા સ્ટોરેજ સાફ કરવાથી તમામ ખરીદદારો, બિલ્સ અને રેકોર્ડ્સ કાયમી રીતે દૂર થઈ જશે. તમારો ડેટા સુરક્ષિત રાખવા ડેટા બેકઅપ → બેકઅપ કાઢો નો ઉપયોગ કરો.',
+      databaseBackupImport: 'ડેટાબેસ બેકઅપ ઇમ્પોર્ટ',
+      databaseBackupImportDesc: 'પાછલી બેકઅપ ફાઇલમાંથી ડેટા પુનઃસ્થાપિત કરો. આ તમારા વર્તમાન લોકલ ડેટાબેસને બદલી નાખશે.',
+      import: 'ઇમ્પોર્ટ',
+      importing: 'ઇમ્પોર્ટ થઈ રહ્યું છે...',
+      importSuccessful: 'ઇમ્પોર્ટ સફળ',
+      importSuccessfulDesc: 'તમારો ડેટાબેસ બેકઅપ ફાઇલમાંથી સફળતાપૂર્વક પુનઃસ્થાપિત થયો છે.',
+      importFailed: 'ઇમ્પોર્ટ નિષ્ફળ',
+      importFailedDesc: 'ડેટાબેસ પુનઃસ્થાપિત કરી શકાયું નથી. કૃપા કરીને માન્ય બેકઅપ ફાઇલ સાથે ફરી પ્રયાસ કરો.',
 
       // Language
       language: 'ભાષા',

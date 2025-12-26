@@ -3,8 +3,9 @@ import { dalalOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dalal } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { useFocusEffect } from 'expo-router';
 import { Edit, Plus, Trash2, User } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function DalalsScreen() {
@@ -19,9 +20,11 @@ export default function DalalsScreen() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    loadDalals();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadDalals();
+    }, [])
+  )
 
   const loadDalals = async () => {
     try {

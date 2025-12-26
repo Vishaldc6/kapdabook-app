@@ -3,9 +3,9 @@ import { dharaOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dhara } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Clock, Edit, Plus, Trash2 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function DharaScreen() {
@@ -20,9 +20,11 @@ export default function DharaScreen() {
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    useEffect(() => {
-        loadDharas();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadDharas();
+        }, [])
+    );
 
     const loadDharas = async () => {
         try {

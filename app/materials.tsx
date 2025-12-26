@@ -3,8 +3,9 @@ import { materialOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Material } from '@/src/types';
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { useFocusEffect } from 'expo-router';
 import { Edit, Package, Plus, Trash2 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MaterialsScreen() {
@@ -19,9 +20,11 @@ export default function MaterialsScreen() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    loadMaterials();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadMaterials();
+    }, [])
+  )
 
   const loadMaterials = async () => {
     try {

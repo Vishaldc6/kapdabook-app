@@ -1,9 +1,9 @@
 import { Language, useLanguage } from '@/src/hook/useLanguage';
-import { exportDatabase, getDatabaseStats } from '@/src/utils/backup';
+import { exportDatabase, getDatabaseStats, importDatabase } from '@/src/utils/backup';
 import { DrawerToggleButton } from '@react-navigation/drawer';
-import { useRouter } from 'expo-router';
-import { ChartBar as BarChart3, Database, Download, Package, ReceiptIndianRupee, Settings as SettingsIcon, User, Users } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { AlertTriangle, ChartBar as BarChart3, Database, DatabaseBackup, Download, Package, ReceiptIndianRupee, Settings as SettingsIcon, Upload, User, Users } from 'lucide-react-native';
+import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingsScreen() {
@@ -19,11 +19,14 @@ export default function SettingsScreen() {
     pendingAmount: 0
   });
   const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
-  useEffect(() => {
-    loadStats();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadStats();
+    }, [])
+  );
 
   const loadStats = async () => {
     try {
@@ -51,6 +54,24 @@ export default function SettingsScreen() {
       setExporting(false);
     }
   };
+
+  const handleImportDatabase = async () => {
+    setImporting(true);
+    try {
+      await importDatabase();
+      Alert.alert(
+        t('importSuccessful'),
+        t('importSuccessfulDesc')
+      );
+    } catch (error) {
+      Alert.alert(
+        t('importFailed'),
+        t('importFailedDesc')
+      );
+    } finally {
+      setImporting(false);
+    }
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -203,6 +224,36 @@ export default function SettingsScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <View style={styles.actionCard}>
+            <DatabaseBackup size={24} color="#6B7280" />
+            <View style={styles.actionInfo}>
+              <Text style={styles.actionTitle}>
+                {t('databaseBackupImport')}
+              </Text>
+              <Text style={styles.actionDescription}>
+                {t('databaseBackupImportDesc')}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.exportButton, { opacity: importing ? 0.5 : 1 }]}
+              onPress={handleImportDatabase}
+              disabled={importing}
+            >
+              <Upload size={20} color="#FFFFFF" />
+              <Text style={styles.exportButtonText}>
+                {importing ? t('importing') : t('import')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.actionCard}>
+            <AlertTriangle size={24} color="#EF4444" />
+            <View style={styles.actionInfo}>
+              <Text style={[styles.actionTitle, styles.warningText]}>{t('dataSafetyWarningTitle')}</Text>
+              <Text style={[styles.actionDescription, styles.warningText]}>{t('dataSafetyWarningDesc')}</Text>
+            </View>
+          </View>
         </View>
 
         {/* App Information */}
@@ -292,6 +343,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 24,
+    gap: 12
   },
   sectionTitle: {
     fontSize: 18,
@@ -393,6 +445,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
   },
+  warningText: { color: "#EF4444" },
   exportButton: {
     flexDirection: 'row',
     alignItems: 'center',

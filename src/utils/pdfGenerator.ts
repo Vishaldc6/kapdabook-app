@@ -52,7 +52,7 @@ export const generateBillPDF = async (bill: Bill) => {
 
   const gstPercentage = bill.tax_percentage || 10;
   const gstAmount = (baseAmount * gstPercentage) / 100;
-  const totalAmount = baseAmount + gstAmount;
+  const totalAmount = Math.round(baseAmount + gstAmount);  
 
   let gstRows = '';
 

@@ -101,7 +101,7 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      <ScrollView style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         {/* Database Statistics */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('databaseOverview')}</Text>
@@ -206,7 +206,7 @@ export default function SettingsScreen() {
         </View>
 
         {/* App Information */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('appInformation')}</Text>
 
           <View style={styles.infoCard}>
@@ -214,20 +214,20 @@ export default function SettingsScreen() {
               <Text style={styles.infoLabel}>{t('version')}</Text>
               <Text style={styles.infoValue}>1.0.0</Text>
             </View>
-            {/* <View style={styles.infoRow}>
+            <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('databaseEngine')}</Text>
               <Text style={styles.infoValue}>SQLite</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('platform')}</Text>
               <Text style={styles.infoValue}>React Native</Text>
-            </View> */}
+            </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('lastBackup')}</Text>
               <Text style={styles.infoValue}>{t('never')}</Text>
             </View>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* Language Selection Modal */}
@@ -300,9 +300,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
   },
   statCard: {
+    flex: 1,
+    minWidth: '40%',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,

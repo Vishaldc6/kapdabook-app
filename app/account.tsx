@@ -314,7 +314,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     saveButton: {
-        margin: 16,
+        marginVertical: 25,
+        marginHorizontal: 16,
         padding: 12,
         borderRadius: 8,
         backgroundColor: '#2563EB',

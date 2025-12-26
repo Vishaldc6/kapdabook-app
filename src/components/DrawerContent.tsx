@@ -1,7 +1,7 @@
 import { usePathname, useRouter } from 'expo-router';
 import { BadgePercent, Building2, Clock, Chrome as Home, Package, ReceiptIndianRupee, Settings, User, Users } from 'lucide-react-native';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '../hook/useLanguage';
 
@@ -45,8 +45,11 @@ export default function DrawerContent() {
         <Text style={styles.brandSubtitle}>Business Management</Text>
       </View>
 
-      <View style={styles.navigation}>
-        {drawerItems.map((item) => {
+      <FlatList
+        data={drawerItems}
+        contentContainerStyle={{ paddingBottom: '50%' }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => {
           const IconComponent = item.icon;
           const active = isActive(item.route);
 
@@ -65,13 +68,8 @@ export default function DrawerContent() {
               </Text>
             </TouchableOpacity>
           );
-        })}
-      </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>{t('version')} 1.0.0</Text>
-        <Text style={styles.footerSubtext}>Built with React Native</Text>
-      </View>
+        }}
+      />
     </SafeAreaView>
   );
 }

@@ -47,7 +47,7 @@ export default function MaterialsScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async () => {    
+  const handleSave = async () => {
     // return;
     if (!validateForm()) return;
 
@@ -128,7 +128,7 @@ export default function MaterialsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         {materials.length === 0 ? (
           <View style={styles.emptyState}>
             <Package size={48} color="#9CA3AF" />
@@ -267,8 +267,9 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: 16,
+    paddingBottom: 50
   },
   emptyState: {
     flex: 1,

@@ -107,7 +107,7 @@ export default function BillCard({ bill, onUpdate, onGeneratePDF, onEdit, handle
         <Calendar size={16} color="#6B7280" />
         <Text style={styles.label}>{t('dueDate')}:</Text>
         <Text style={[styles.value, { color: getStatusColor() }]}>
-          {new Date(bill.due_date || '').toLocaleDateString()}
+          {new Date(bill.due_date || '').toLocaleDateString('en-IN')}
         </Text>
       </View>
 

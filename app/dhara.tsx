@@ -135,7 +135,7 @@ export default function DharaScreen() {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.content}>
+            <ScrollView contentContainerStyle={styles.content}>
                 {dharas.length === 0 ? (
                     <View style={styles.emptyState}>
                         <Clock size={48} color="#9CA3AF" />
@@ -261,8 +261,9 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
     content: {
-        flex: 1,
+        flexGrow: 1,
         padding: 16,
+        paddingBottom: 50
     },
     emptyState: {
         flex: 1,

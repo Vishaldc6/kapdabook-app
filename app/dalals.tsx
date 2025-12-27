@@ -1,7 +1,9 @@
+import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { dalalOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dalal } from '@/src/types';
+import { AdIds } from '@/src/utils/admob';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect } from 'expo-router';
 import { Edit, Plus, Trash2, User } from 'lucide-react-native';
@@ -131,6 +133,7 @@ export default function DalalsScreen() {
           <Text style={styles.addButtonText}>{t('add')}</Text>
         </TouchableOpacity>
       </View>
+      <AdBannerCard unitId={AdIds.DALAL_BANNER} />
 
       <ScrollView contentContainerStyle={styles.content}>
         {dalals.length === 0 ? (

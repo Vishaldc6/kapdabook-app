@@ -39,3 +39,13 @@ yarn-error.*
 app-example
 
 package-lock.json
+
+android/
+ios/
+
+# build outputs
+.gradle
+.idea
+Pods
+*.iml
+build*

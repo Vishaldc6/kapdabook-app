@@ -50,32 +50,38 @@ export const generateBillPDF = async (bill: Bill) => {
   const billDate = new Date(bill.date).toLocaleDateString('en-IN');
   const baseAmount = bill.meter * bill.price_rate;
 
-  const gstPercentage = bill.tax_percentage || 10;
-  const gstAmount = (baseAmount * gstPercentage) / 100;
-  const totalAmount = Math.round(baseAmount + gstAmount);  
+  const taxPercentage = bill.tax_percentage || 0;
+  const taxAmount = (baseAmount * taxPercentage) / 100;
+  const totalAmount = Math.round(baseAmount + taxAmount);
 
   let gstRows = '';
 
   if (bill.tax_name?.toLowerCase() === 'igst') {
     gstRows += `
       <tr>
-        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add IGST @ ${gstPercentage}%</td>
-        <td style="text-align: right; padding: 8px;">₹${gstAmount.toFixed(2)}</td>
+        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add IGST @ ${taxPercentage}%</td>
+        <td style="text-align: right; padding: 8px;">₹${taxAmount.toFixed(2)}</td>
       </tr>
     `;
-  } else {
-    const halfGst = gstPercentage / 2;
-    const halfGstAmount = gstAmount / 2;
+  } else if (bill.tax_name?.toLowerCase() === 'sgst & cgst') {
+    const halfGst = taxPercentage / 2;
+    const halftaxAmount = taxAmount / 2;
     gstRows += `
       <tr>
         <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add CGST @ ${halfGst}%</td>
-        <td style="text-align: right; padding: 8px;">₹${halfGstAmount.toFixed(2)}</td>
+        <td style="text-align: right; padding: 8px;">₹${halftaxAmount.toFixed(2)}</td>
       </tr>
       <tr>
         <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add SGST @ ${halfGst}%</td>
-        <td style="text-align: right; padding: 8px;">₹${halfGstAmount.toFixed(2)}</td>
+        <td style="text-align: right; padding: 8px;">₹${halftaxAmount.toFixed(2)}</td>
       </tr>
     `;
+  } else {
+    gstRows += `
+      <tr>
+        <td colspan="5" style="text-align: right; padding: 8px; font-weight: 600;">Add ${bill.tax_name} @ ${taxPercentage}%</td>
+        <td style="text-align: right; padding: 8px;">₹${taxAmount.toFixed(2)}</td>
+      </tr>`
   }
 
   const amountInWords = numberToWords(totalAmount);
@@ -390,7 +396,7 @@ export const generateBillPDF = async (bill: Bill) => {
 
         <div class="footer-right">
           <div class="signature-box">
-            <div style="text-align: right; font-weight: 600; margin-bottom: 10px;">
+            <div style="text-align: center; font-weight: 600; margin-bottom: 10px;">
               For, ${companyInfo.name}
             </div>
             <div class="signature-line">
@@ -398,7 +404,7 @@ export const generateBillPDF = async (bill: Bill) => {
             </div>
           </div>
           <div class="signature-box">
-            <div style="text-align: right; font-weight: 600; margin-bottom: 10px;">
+            <div style="text-align: center; font-weight: 600; margin-bottom: 10px;">
               Receiver's Signature
             </div>
             <div class="signature-line">

@@ -5,12 +5,14 @@ import { Filter, Plus, ReceiptIndianRupee } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import AdBannerCard from '@/src/components/AdBannerCard';
 import BillCard from '@/src/components/BillCard';
 import FormInput from '@/src/components/FormInput';
 import Picker from '@/src/components/Picker';
 import { billOperations, buyerOperations, dalalOperations, dharaOperations, materialOperations, taxOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Bill, Buyer, Dalal, Dhara, Material, Tax } from '@/src/types';
+import { AdIds } from '@/src/utils/admob';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 
 type BillTypeFilter = 'all' | 'paid' | 'pending';
@@ -304,6 +306,7 @@ export default function BillsScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      <AdBannerCard unitId={AdIds.BILL_BANNER} />
 
       <ScrollView contentContainerStyle={styles.content}>
         {filteredBills.length === 0 ? (

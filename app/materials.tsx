@@ -1,7 +1,9 @@
+import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { materialOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Material } from '@/src/types';
+import { AdIds } from '@/src/utils/admob';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect } from 'expo-router';
 import { Edit, Package, Plus, Trash2 } from 'lucide-react-native';
@@ -130,6 +132,7 @@ export default function MaterialsScreen() {
           <Text style={styles.addButtonText}>{t('add')}</Text>
         </TouchableOpacity>
       </View>
+      <AdBannerCard unitId={AdIds.MATERIAL_BANNER} />
 
       <ScrollView contentContainerStyle={styles.content}>
         {materials.length === 0 ? (

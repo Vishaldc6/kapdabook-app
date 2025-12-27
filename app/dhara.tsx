@@ -1,7 +1,9 @@
+import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { dharaOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dhara } from '@/src/types';
+import { AdIds } from '@/src/utils/admob';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Clock, Edit, Plus, Trash2 } from 'lucide-react-native';
@@ -136,6 +138,7 @@ export default function DharaScreen() {
                     <Text style={styles.addButtonText}>{t('add')}</Text>
                 </TouchableOpacity>
             </View>
+            <AdBannerCard unitId={AdIds.PAYMENT_BANNER} />
 
             <ScrollView contentContainerStyle={styles.content}>
                 {dharas.length === 0 ? (

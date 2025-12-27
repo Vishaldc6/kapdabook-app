@@ -1,7 +1,9 @@
+import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { buyerOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Buyer } from '@/src/types';
+import { AdIds } from '@/src/utils/admob';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect } from 'expo-router';
 import { Edit, Plus, Trash2, Users } from 'lucide-react-native';
@@ -134,6 +136,7 @@ export default function BuyersScreen() {
           <Text style={styles.addButtonText}>{t('add')}</Text>
         </TouchableOpacity>
       </View>
+      <AdBannerCard unitId={AdIds.BUYER_BANNER} />
 
       <ScrollView contentContainerStyle={styles.content}>
         {buyers.length === 0 ? (

@@ -1,6 +1,4 @@
-import AdBannerCard from '@/src/components/AdBannerCard';
 import { Language, useLanguage } from '@/src/hook/useLanguage';
-import { AdIds } from '@/src/utils/admob';
 import { exportDatabase, getDatabaseStats, importDatabase } from '@/src/utils/backup';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -258,7 +256,6 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <AdBannerCard unitId={AdIds.SETTING_BANNER} />
         {/* App Information */}
         {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('appInformation')}</Text>

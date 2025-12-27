@@ -1,9 +1,7 @@
-import AdBannerCard from '@/src/components/AdBannerCard';
 import BillCard from '@/src/components/BillCard';
 import { billOperations, companyOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Bill, CompanyProfile } from '@/src/types';
-import { AdIds } from '@/src/utils/admob';
 import { getDatabaseStats } from '@/src/utils/backup';
 import { generateBillPDF } from '@/src/utils/pdfGenerator';
 import { DrawerToggleButton } from '@react-navigation/drawer';
@@ -130,6 +128,9 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      {profileCompleted && <View style={[styles.summaryCard, styles.warningCard]}>
+        <Text style={styles.warningTax}>{t('completeProfileForPDF')}</Text>
+      </View>}
 
       <ScrollView
         style={styles.content}
@@ -137,9 +138,6 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {profileCompleted && <View style={[styles.summaryCard, styles.warningCard]}>
-          <Text style={styles.warningTax}>{t('completeProfileForPDF')}</Text>
-        </View>}
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
@@ -220,8 +218,6 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
-
-        <AdBannerCard unitId={AdIds.DASHBOARD_BANNER} />
       </ScrollView>
     </View>
   );

@@ -1,29 +1,10 @@
-import DrawerContent from '@/src/components/DrawerContent';
-import LanguageProvider from '@/src/components/LanguageProvider';
-import { loadAppOpenAd } from '@/src/utils/admob';
 import { Drawer } from 'expo-router/drawer';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import DrawerContent from '@/src/components/DrawerContent';
+import LanguageProvider from '@/src/components/LanguageProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import mobileAds from 'react-native-google-mobile-ads';
 
 export default function RootLayout() {
-
-  useEffect(() => {
-    mobileAds()
-      .initialize()
-      .then(adapterStatuses => {
-        console.log("Initialization complete!", { adapterStatuses });
-      }).catch(e => {
-        console.log({ e });
-      });
-  }, [])
-
-  useEffect(() => {
-    setTimeout(() => {
-      loadAppOpenAd();
-    }, 500);
-  }, []);
 
   return (
     <LanguageProvider>

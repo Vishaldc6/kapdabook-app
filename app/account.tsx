@@ -1,9 +1,7 @@
-import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { companyOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { CompanyProfile } from '@/src/types';
-import { AdIds } from '@/src/utils/admob';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { useFocusEffect } from 'expo-router';
 import { Building2 } from 'lucide-react-native';
@@ -256,7 +254,6 @@ export default function AccountScreen() {
                         />
                     </View>
                 </View>
-                <AdBannerCard unitId={AdIds.ACCOUNT_BANNER} />
             </ScrollView>
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>

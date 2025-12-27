@@ -1,15 +1,13 @@
 import { DrawerToggleButton } from '@react-navigation/drawer';
-import { useFocusEffect } from 'expo-router';
 import { BadgePercent, Edit, Plus } from 'lucide-react-native';
+import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import AdBannerCard from '@/src/components/AdBannerCard';
 import FormInput from '@/src/components/FormInput';
 import { taxOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Tax } from '@/src/types';
-import { AdIds } from '@/src/utils/admob';
 
 export default function TaxesScreen() {
     const { t } = useLanguage();
@@ -130,7 +128,6 @@ export default function TaxesScreen() {
                     <Text style={styles.addButtonText}>{t('add')}</Text>
                 </TouchableOpacity>
             </View>
-            <AdBannerCard unitId={AdIds.TAX_BANNER} />
 
             <ScrollView contentContainerStyle={styles.content}>
                 {taxes.length === 0 ? (

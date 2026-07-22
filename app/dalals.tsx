@@ -2,7 +2,7 @@ import FormInput from '@/src/components/FormInput';
 import { dalalOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Dalal } from '@/src/types';
-import { DrawerToggleButton } from '@react-navigation/drawer';
+import DrawerToggleButton from '@/src/components/DrawerToggleButton';
 import { useFocusEffect } from 'expo-router';
 import { Edit, Plus, Trash2, User } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';

@@ -1,6 +1,6 @@
 import { Language, useLanguage } from '@/src/hook/useLanguage';
 import { exportDatabase, getDatabaseStats, importDatabase } from '@/src/utils/backup';
-import { DrawerToggleButton } from '@react-navigation/drawer';
+import DrawerToggleButton from '@/src/components/DrawerToggleButton';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { AlertTriangle, ChartBar as BarChart3, Database, DatabaseBackup, Download, Package, ReceiptIndianRupee, Settings as SettingsIcon, Upload, User, Users } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';

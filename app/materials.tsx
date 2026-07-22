@@ -2,7 +2,7 @@ import FormInput from '@/src/components/FormInput';
 import { materialOperations } from '@/src/database/database';
 import { useLanguage } from '@/src/hook/useLanguage';
 import { Material } from '@/src/types';
-import { DrawerToggleButton } from '@react-navigation/drawer';
+import DrawerToggleButton from '@/src/components/DrawerToggleButton';
 import { useFocusEffect } from 'expo-router';
 import { Edit, Package, Plus, Trash2 } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
